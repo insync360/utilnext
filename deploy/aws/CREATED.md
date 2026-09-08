@@ -11,7 +11,8 @@ Created 2026-09-08 with the AWS CLI as IAM user `utilnext-deployer`, account 945
 | Key pair | `utilnext-ap-south-1` (ed25519; private key on the dev machine at `~/.ssh/utilnext-ap-south-1`) |
 | SSH | `ssh -i ~/.ssh/utilnext-ap-south-1 ubuntu@13.206.22.220` |
 | Checkout | `/opt/utilnext` (branch `release`), env in `/opt/utilnext/deploy/.env` (not in git) |
-| Site | `utilnext`, `http://13.206.22.220`, `ENABLE_TLS=false` |
+| Site | `utilnext`, https://erp.utilnext.com (also https://utilnext.com), `ENABLE_TLS=true`, Let's Encrypt via Traefik |
+| Domain | `utilnext.com` registered in Route 53 (2026-09-08, expires 2027-09-08); hosted zone `Z0517653J36YUSXE62KV`; A records `erp` and apex -> 13.206.22.220 |
 
 Commands used (for reproducing in another region/account):
 
@@ -39,10 +40,10 @@ aws ec2 associate-address --instance-id <i-…> --allocation-id <eipalloc-…>
    stopped instance costs only the 30 GB volume, about $2.5/month, plus $3.6/month for the idle EIP).
 - Resize later: stop, `aws ec2 modify-instance-attribute --instance-id … --instance-type '{"Value":"t3.large"}'`, start.
 
-## Next steps when a domain exists
+## Domain and TLS (done 2026-09-08)
 
-1. Route 53 hosted zone (or external DNS): `A` record → `13.206.22.220`.
-2. In `/opt/utilnext/deploy/.env`: `ENABLE_TLS=true`, `SITES_RULE=Host(\`erp.utilnext.com\`)`,
-   `LETSENCRYPT_EMAIL=…`, `PUBLIC_URL=https://erp.utilnext.com`.
-3. `bash deploy/scripts/deploy.sh` (Traefik obtains the certificate on first request).
-4. Add the domain to Website Settings if you also want it as the printed site URL.
+- Route 53 A records `erp.utilnext.com` and `utilnext.com` -> Elastic IP (TTL 300).
+- Server `deploy/.env`: `ENABLE_TLS=true`, `SITES_RULE=Host(`erp.utilnext.com`) || Host(`utilnext.com`)`,
+  `LETSENCRYPT_EMAIL`, `PUBLIC_URL=https://erp.utilnext.com`; `deploy.sh` switched Traefik to the https override.
+- Certificate is issued and renewed automatically by Traefik (stored in the `cert-data` volume).
+- Registrar to-dos: enable auto-renew and transfer lock on the domain.
