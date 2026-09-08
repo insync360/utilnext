@@ -2,16 +2,8 @@
 # Create the Frappe site named $SITE_NAME with ERPNext installed.
 # Called by deploy.sh on first deploy; safe to run manually.
 set -euo pipefail
-
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$REPO_ROOT"
-set -a; source deploy/.env; set +a
-: "${SITE_NAME:?}" "${DB_PASSWORD:?}" "${ADMIN_PASSWORD:?ADMIN_PASSWORD not set}"
-
-export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-utilnext}"
-COMPOSE=(docker compose --env-file deploy/.env
-  -f compose.yaml -f overrides/compose.mariadb.yaml -f overrides/compose.redis.yaml
-  -f overrides/compose.https.yaml -f deploy/compose.utilnext.yaml)
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+: "${ADMIN_PASSWORD:?ADMIN_PASSWORD not set}"
 
 "${COMPOSE[@]}" exec -T backend bash -c '
   set -e

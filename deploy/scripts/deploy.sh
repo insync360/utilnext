@@ -4,32 +4,11 @@
 #
 #   bash deploy/scripts/deploy.sh
 #
-# Expects deploy/.env (copy deploy/.env.example). Run from the repo root or
-# anywhere; the script cd's to the repo root itself.
+# Expects deploy/.env (copy deploy/.env.example).
 set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-cd "$REPO_ROOT"
-
-ENV_FILE="deploy/.env"
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing $ENV_FILE. Copy deploy/.env.example and fill it in." >&2
-  exit 1
-fi
-# shellcheck disable=SC1090
-set -a; source "$ENV_FILE"; set +a
-: "${SITE_NAME:?SITE_NAME not set in $ENV_FILE}"
-: "${DB_PASSWORD:?DB_PASSWORD not set in $ENV_FILE}"
-
-export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-utilnext}"
-COMPOSE=(docker compose --env-file "$ENV_FILE"
-  -f compose.yaml
-  -f overrides/compose.mariadb.yaml
-  -f overrides/compose.redis.yaml
-  -f overrides/compose.https.yaml
-  -f deploy/compose.utilnext.yaml)
-
-echo "==> Pulling images and starting services (project: $COMPOSE_PROJECT_NAME)"
+echo "==> Pulling images and starting services (project: $COMPOSE_PROJECT_NAME, tls: ${ENABLE_TLS:-true})"
 "${COMPOSE[@]}" pull --quiet
 "${COMPOSE[@]}" up -d --remove-orphans
 

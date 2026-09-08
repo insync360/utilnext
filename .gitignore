@@ -38,3 +38,7 @@ node_modules
 
 # Production env file (server only)
 deploy/.env
+
+# AWS access key downloads (never commit)
+*_accessKeys.csv
+*.pem

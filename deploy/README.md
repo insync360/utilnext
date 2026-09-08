@@ -27,7 +27,9 @@ Branches:
 
 ## 2. First deploy
 
-SSH in and run the bootstrap (installs Docker, clones the `release` branch to `/opt/utilnext`):
+Using the AWS CLI the instance can be created with `deploy/aws/user-data.sh` as user data
+(installs swap, Docker and clones the `release` branch); see the commands recorded in
+`deploy/aws/CREATED.md`. Otherwise SSH in and run the bootstrap (installs Docker, clones the `release` branch to `/opt/utilnext`):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/insync360/utilnext/release/deploy/scripts/server-setup.sh | sudo bash
@@ -39,8 +41,10 @@ It stops after creating `/opt/utilnext/deploy/.env`. Edit that file:
 sudo nano /opt/utilnext/deploy/.env
 ```
 
-Set `SITE_NAME` and `SITES_RULE` to your domain, strong `DB_PASSWORD` and `ADMIN_PASSWORD`,
-and `LETSENCRYPT_EMAIL`. Then run the deploy:
+Set strong `DB_PASSWORD` and `ADMIN_PASSWORD`, and `PUBLIC_URL` to the address users will type.
+Without a domain keep `ENABLE_TLS=false` (plain HTTP on the Elastic IP, fine for development).
+With a domain set `ENABLE_TLS=true`, `SITES_RULE=Host(\`erp.example.com\`)` and `LETSENCRYPT_EMAIL`;
+DNS must already point at the server. Then run the deploy:
 
 ```bash
 cd /opt/utilnext && bash deploy/scripts/deploy.sh
@@ -62,6 +66,7 @@ into `release` to ship.
 
 ```bash
 cd /opt/utilnext
+# same compose file set the scripts use (overrides/compose.proxy.yaml when ENABLE_TLS=false)
 C="docker compose --env-file deploy/.env -f compose.yaml -f overrides/compose.mariadb.yaml -f overrides/compose.redis.yaml -f overrides/compose.https.yaml -f deploy/compose.utilnext.yaml"
 $C ps                                  # status
 $C logs -f backend                     # app logs
