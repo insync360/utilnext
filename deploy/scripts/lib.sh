@@ -18,7 +18,7 @@ fi
 # Load KEY=VALUE lines without bash evaluation (values such as
 # SITES_RULE=Host(`x`) contain backticks and parentheses).
 while IFS= read -r line || [[ -n "$line" ]]; do
-  line="${line%$''}"
+  line="${line%$'\r'}"
   [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
   [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] || continue
   export "$line"
