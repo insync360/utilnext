@@ -15,8 +15,14 @@ if [[ ! -f "$ENV_FILE" ]]; then
   echo "Missing $ENV_FILE. Copy deploy/.env.example and fill it in." >&2
   exit 1
 fi
-# shellcheck disable=SC1090
-set -a; source "$ENV_FILE"; set +a
+# Load KEY=VALUE lines without bash evaluation (values such as
+# SITES_RULE=Host(`x`) contain backticks and parentheses).
+while IFS= read -r line || [[ -n "$line" ]]; do
+  line="${line%$''}"
+  [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+  [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] || continue
+  export "$line"
+done < "$ENV_FILE"
 : "${SITE_NAME:?SITE_NAME not set in $ENV_FILE}"
 : "${DB_PASSWORD:?DB_PASSWORD not set in $ENV_FILE}"
 
