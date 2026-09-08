@@ -32,3 +32,9 @@ node_modules
 # VitePress
 **/.vitepress/dist
 **/.vitepress/cache
+
+# Salesforce CLI org cache (local tooling, not part of the project)
+.sf/
+
+# Production env file (server only)
+deploy/.env

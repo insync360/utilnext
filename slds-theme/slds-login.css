@@ -1,0 +1,349 @@
+/* =====================================================================
+   ERPNext login page in the style of the Salesforce login screen.
+   Website page (not desk): injected via Website Settings → head HTML.
+   Layout: left pane (surface-2 #f3f3f3) with logo + white login card + footer,
+   right pane with a blue gradient promo panel (built by slds-login.js).
+   Colours/shapes mirror the SLDS 2 "Cosmos" tokens used by slds-theme.css
+   (this page cannot see those variables, so the values are repeated here).
+   Scoped to body[data-path="login"] so other website pages are untouched.
+   ===================================================================== */
+
+body[data-path="login"] {
+	--sf-brand: #066afe;            /* Cosmos accent-1 (brand-50) */
+	--sf-brand-dark: #0250d9;       /* accent-2 (brand-40): hover, links */
+	--sf-brand-deep: #001e5b;       /* brand-15: focus ring */
+	--sf-navy: #03234d;             /* on-surface-3: headings */
+	--sf-pane: #f3f3f3;             /* surface-2 */
+	--sf-border: #c9c9c9;           /* border-1 */
+	--sf-border-strong: #5c5c5c;    /* border-2: inputs */
+	--sf-border-soft: #e5e5e5;
+	--sf-text: #2e2e2e;             /* on-surface-2 */
+	--sf-text-weak: #5c5c5c;        /* on-surface-1 */
+	--sf-label: #2e2e2e;            /* label-color: on-surface-2, weight 600 */
+	--sf-link: #0250d9;
+	--sf-radius: 0.5rem;            /* radius-border-2 */
+	--sf-radius-card: 1.25rem;      /* radius-border-4 */
+	--sf-focus: 0 0 0 2px #fff, 0 0 0 4px #001e5b;
+	--sf-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	margin: 0;
+	font-family: var(--sf-font);
+	color: var(--sf-text);
+	background: var(--sf-pane);
+}
+
+/* ---------- Page frame: two panes ----------------------------------- */
+body[data-path="login"] #page-login {
+	display: grid;
+	grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+	min-height: 100vh;
+}
+body[data-path="login"] .page-content-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background: var(--sf-pane);
+}
+body[data-path="login"] .page-breadcrumbs,
+body[data-path="login"] .page-header-wrapper,
+body[data-path="login"] .web-footer,
+body[data-path="login"] footer,
+body[data-path="login"] .navbar {
+	display: none !important;
+}
+body[data-path="login"] main.container {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	max-width: none;
+	padding: 3rem 1.5rem 2rem;
+}
+body[data-path="login"] .page_content { width: 100%; display: flex; justify-content: center; }
+body[data-path="login"] .page_content > div { width: 100%; display: flex; justify-content: center; }
+
+/* ---------- Logo above the card (moved there by JS) ----------------- */
+body[data-path="login"] .slds-login-logo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	margin: 0 0 1.75rem;
+}
+body[data-path="login"] .slds-login-logo img { width: 5rem; height: 5rem; }
+body[data-path="login"] .slds-login-logo span {
+	font-size: 2rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--sf-navy);
+}
+
+/* ---------- Login card ---------------------------------------------- */
+body[data-path="login"] section.for-login,
+body[data-path="login"] section.for-forgot,
+body[data-path="login"] section.for-signup,
+body[data-path="login"] section.for-email-login,
+body[data-path="login"] section.for-login-with-email-link {
+	width: 100%;
+	max-width: 24rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+body[data-path="login"] .page-card.login-content {
+	width: 100%;
+	max-width: 24rem;
+	margin: 0;
+	padding: 1.5rem 1.5rem 1.75rem;
+	background: #fff;
+	border: 1px solid transparent;
+	border-radius: var(--sf-radius-card);
+	box-shadow: none;
+}
+body[data-path="login"] .page-card-head {
+	display: block;
+	text-align: center;
+	margin: 0 0 1rem;
+	padding: 0;
+}
+body[data-path="login"] .page-card-head .app-logo { display: none; }
+body[data-path="login"] .page-card-head h4 {
+	font-size: 1.25rem;
+	font-weight: 400;
+	color: var(--sf-navy);
+	margin: 0.25rem 0 0.25rem;
+}
+body[data-path="login"] .page-card-subtitle { display: none; }
+body[data-path="login"] section.for-forgot .page-card-subtitle,
+body[data-path="login"] section.for-login-with-email-link .page-card-subtitle {
+	display: block;
+	font-size: 0.8125rem;
+	color: var(--sf-text-weak);
+	margin: 0;
+}
+
+/* Fields */
+body[data-path="login"] .page-card-body { padding: 0; }
+body[data-path="login"] .form-group { margin-bottom: 1rem; }
+/* Frappe's website/login bundle loads after this file, hence the !important
+   on the few properties it also sets. */
+body[data-path="login"] .form-label {
+	display: block;
+	font-size: 0.8125rem !important;
+	font-weight: 600 !important;
+	color: var(--sf-label) !important;
+	margin: 0 0 0.375rem !important;
+}
+body[data-path="login"] .field-icon { display: none !important; }
+body[data-path="login"] .email-field,
+body[data-path="login"] .password-field { position: relative; }
+body[data-path="login"] .form-control,
+body[data-path="login"] input.form-control {
+	height: 2.75rem !important;
+	padding: 0 0.75rem !important;
+	font-size: 0.9375rem !important;
+	font-family: var(--sf-font);
+	color: var(--sf-text);
+	background: #fff !important;
+	border: 1px solid var(--sf-border-strong) !important;
+	border-radius: var(--sf-radius) !important;
+	box-shadow: none;
+}
+body[data-path="login"] .password-field .form-control { padding-right: 2.5rem !important; }
+body[data-path="login"] .form-control:focus {
+	border-color: var(--sf-border-strong);
+	box-shadow: var(--sf-focus);
+	outline: 0;
+}
+body[data-path="login"] .toggle-password {
+	position: absolute;
+	right: 0.75rem;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	color: #757575;
+}
+body[data-path="login"] .field-error { font-size: 0.75rem; color: #b60554; margin: 0.25rem 0 0; }
+body[data-path="login"] .login-error-banner {
+	border-radius: var(--sf-radius);
+	background: #fddde3;
+	color: #b60554;
+	font-size: 0.8125rem;
+}
+
+/* Forgot password: sits under a divider, left aligned like Salesforce */
+body[data-path="login"] .forgot-password-message {
+	margin: 0;
+	padding-top: 0.875rem;
+	border-top: 1px solid var(--sf-border-soft);
+	text-align: left;
+	font-size: 0.8125rem;
+}
+body[data-path="login"] .forgot-password-message a { color: var(--sf-link); text-decoration: none; }
+body[data-path="login"] .forgot-password-message a:hover { color: #022ac0; text-decoration: underline; }
+/* Move the forgot link out of the password group to below the actions (JS re-parents it). */
+body[data-path="login"] .slds-login-links {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-top: 1rem;
+	padding-top: 0.875rem;
+	border-top: 1px solid var(--sf-border-soft);
+	font-size: 0.8125rem;
+}
+body[data-path="login"] .slds-login-links a { color: var(--sf-link); text-decoration: none; }
+body[data-path="login"] .slds-login-links a:hover { text-decoration: underline; }
+body[data-path="login"] .slds-login-links .forgot-password-message { border: 0; padding: 0; }
+
+/* Buttons */
+body[data-path="login"] .page-card-actions { margin-top: 0.25rem; }
+body[data-path="login"] .btn.btn-login,
+body[data-path="login"] .btn.btn-signup,
+body[data-path="login"] .btn.btn-forgot,
+body[data-path="login"] .btn-primary {
+	display: block;
+	width: 100%;
+	height: 2.75rem;
+	line-height: 2.625rem;
+	padding: 0 1rem;
+	font-size: 0.9375rem;
+	font-weight: 600;
+	font-family: var(--sf-font);
+	color: #fff !important;
+	background: var(--sf-brand) !important;
+	border: 1px solid var(--sf-brand) !important;
+	border-radius: 15rem;
+	box-shadow: none !important;
+	transition: background-color 0.15s linear, box-shadow 0.15s linear, transform 0.15s linear;
+}
+body[data-path="login"] .btn.btn-login:hover,
+body[data-path="login"] .btn.btn-signup:hover,
+body[data-path="login"] .btn.btn-forgot:hover,
+body[data-path="login"] .btn-primary:hover {
+	background: var(--sf-brand-dark) !important;
+	border-color: var(--sf-brand-dark) !important;
+	box-shadow: 0 2px 0 0 #002775 !important;
+	transform: translateY(-2px);
+}
+body[data-path="login"] .btn.btn-login:focus-visible { box-shadow: var(--sf-focus) !important; outline: 0; }
+/* Secondary options (email link / social) become plain links like "Use Custom Domain" */
+body[data-path="login"] .btn.btn-login-option,
+body[data-path="login"] .btn.btn-login-option:hover {
+	display: block;
+	width: auto;
+	height: auto;
+	margin: 0;
+	padding: 0;
+	line-height: 1.5;
+	font-size: 0.8125rem;
+	text-align: left !important;
+	color: var(--sf-link) !important;
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+body[data-path="login"] .btn.btn-login-option:hover { text-decoration: underline; }
+body[data-path="login"] .social-logins { margin-top: 0.75rem; }
+body[data-path="login"] .login-divider { display: none; }
+
+/* Remember me (decorative parity with Salesforce; ERPNext sessions persist anyway) */
+body[data-path="login"] .slds-remember {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0.875rem 0 0;
+	font-size: 0.8125rem;
+	color: var(--sf-text);
+}
+body[data-path="login"] .slds-remember input {
+	width: 0.875rem;
+	height: 0.875rem;
+	margin: 0;
+	accent-color: var(--sf-brand);
+}
+
+/* Footer */
+body[data-path="login"] .slds-login-footer {
+	padding: 1.25rem 1.5rem;
+	text-align: center;
+	font-size: 0.75rem;
+	color: var(--sf-text-weak);
+}
+
+/* ---------- Promo pane -------------------------------------------- */
+body[data-path="login"] .slds-login-promo {
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 4rem 5rem;
+	color: var(--sf-navy);
+	background:
+		radial-gradient(60% 55% at 15% 12%, rgba(172, 243, 228, 0.9) 0%, rgba(172, 243, 228, 0) 70%),
+		radial-gradient(70% 70% at 90% 90%, #4992fe 0%, rgba(73, 146, 254, 0) 70%),
+		linear-gradient(160deg, #edf4ff 0%, #a8cbff 45%, #066afe 100%);
+}
+body[data-path="login"] .slds-login-promo__kicker {
+	font-size: 0.875rem;
+	font-weight: 700;
+	margin: 0 0 1.25rem;
+}
+body[data-path="login"] .slds-login-promo__title {
+	font-size: clamp(2rem, 3.6vw, 3.25rem);
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	margin: 0 0 1.5rem;
+}
+body[data-path="login"] .slds-login-promo__text {
+	font-size: 1.125rem;
+	line-height: 1.5;
+	margin: 0 0 2rem;
+	max-width: 36rem;
+}
+body[data-path="login"] .slds-login-promo__cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	height: 3.25rem;
+	padding: 0 2rem;
+	border-radius: 2rem;
+	background: var(--sf-brand);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 700;
+	text-decoration: none;
+	width: fit-content;
+	transition: background-color 0.15s linear;
+}
+body[data-path="login"] .slds-login-promo__cta:hover { background: var(--sf-brand-dark); color: #fff; text-decoration: none; box-shadow: 0 2px 0 0 #002775; transform: translateY(-2px); }
+body[data-path="login"] .slds-login-promo__cta svg { width: 1rem; height: 1rem; fill: currentColor; }
+body[data-path="login"] .slds-login-promo__features {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1rem;
+	margin: 3rem 0 0;
+	padding: 0;
+	list-style: none;
+	max-width: 40rem;
+}
+body[data-path="login"] .slds-login-promo__features li {
+	padding: 1rem;
+	border-radius: 1.25rem;
+	background: rgba(255, 255, 255, 0.55);
+	backdrop-filter: blur(6px);
+	font-size: 0.8125rem;
+	line-height: 1.4;
+}
+body[data-path="login"] .slds-login-promo__features strong {
+	display: block;
+	font-size: 1rem;
+	margin-bottom: 0.25rem;
+}
+
+@media (max-width: 900px) {
+	body[data-path="login"] #page-login { grid-template-columns: 1fr; }
+	body[data-path="login"] .slds-login-promo { display: none; }
+}

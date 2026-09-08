@@ -1,0 +1,17 @@
+# UtilNext production override.
+# Adds the Salesforce-style theme files to the nginx container so they are
+# served at /assets/slds/*. In the image, sites/assets is a symlink to
+# /home/frappe/frappe-bench/assets (inside the image, not the shared volume),
+# hence the mount target. Relative paths are resolved against the project
+# directory (the repo root, where compose.yaml lives), not this file's folder.
+#
+# Used together with the upstream compose files, see deploy/scripts/deploy.sh:
+#   compose.yaml
+#   overrides/compose.mariadb.yaml
+#   overrides/compose.redis.yaml
+#   overrides/compose.https.yaml      (Traefik + Let's Encrypt on 80/443)
+#   deploy/compose.utilnext.yaml      (this file)
+services:
+  frontend:
+    volumes:
+      - ./slds-theme:/home/frappe/frappe-bench/assets/slds:ro

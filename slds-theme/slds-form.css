@@ -1,0 +1,947 @@
+/* =====================================================================
+   slds-form.css - Salesforce Lightning "record page" look for Frappe
+   forms (/desk/<doctype>/<name> and /new).  Tokens come from
+   slds-theme.css.  Structural additions (highlights row, path bar,
+   kicker) are inserted by slds-form.js; everything else is CSS only.
+   Most rules are scoped to body[data-route^="Form"] so they do not leak
+   into workspaces, list views or dialogs.
+   ===================================================================== */
+
+/* ---------- 1. Page layout: main column + right sidebar ------------ */
+body[data-route^="Form"] {
+	--slds-form-head-h: 6.5rem;               /* set live by slds-form.js */
+	--slds-form-sidebar-w: 18rem;
+	--slds-form-gap: 0.75rem;
+}
+body[data-route^="Form"] .layout-main.layout-two-column {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--slds-form-gap);
+	padding: var(--slds-form-gap) 0 2rem;
+}
+body[data-route^="Form"] .layout-main-section-wrapper {
+	flex: 1 1 auto !important;
+	width: auto !important;
+	min-width: 0;
+	margin: 0;
+}
+body[data-route^="Form"] .layout-main-section {
+	background: transparent;
+	padding: 0 !important;
+	border: 0;
+	box-shadow: none;
+}
+body[data-route^="Form"] .form-layout,
+body[data-route^="Form"] .std-form-layout > .form-layout > .form-page {
+	background: transparent;
+	box-shadow: none;
+}
+/* Frappe caps section width at --page-max-width; Lightning is fluid. */
+body[data-route^="Form"] .std-form-layout .section-head,
+body[data-route^="Form"] .std-form-layout .section-body,
+body[data-route^="Form"] .form-footer,
+body[data-route^="Form"] .form-section-description {
+	max-width: none !important;
+}
+
+/* ---------- 2. Highlights panel (Frappe .page-head) ---------------- */
+body[data-route^="Form"] .page-head .container { padding: 0.75rem 0.25rem 0.5rem; }
+/* (the sticky-gap mask above the head lives in slds-theme.css) */
+body[data-route^="Form"] .page-head .page-head-content {
+	flex-wrap: wrap !important;   /* Frappe adds .flex-nowrap; the key-field row wraps below */
+	row-gap: 0.5rem;
+	height: auto;
+}
+body[data-route^="Form"] .page-head .page-title {
+	align-items: flex-start;
+	flex: 1 1 20rem;
+	min-width: 0;
+	padding: 0;
+	overflow: visible;
+}
+body[data-route^="Form"] .page-head .standard-items-section {
+	flex: 0 0 auto;
+	margin-left: auto;
+	max-width: 100%;
+}
+body[data-route^="Form"] .page-head .page-title .slds-page-icon {
+	width: 2.5rem; height: 2.5rem;
+	margin-top: 0.125rem;
+}
+body[data-route^="Form"] .page-head .page-title .slds-page-icon svg { width: 1.375rem; height: 1.375rem; }
+body[data-route^="Form"] .page-head .title-area {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0 0.5rem;
+	min-width: 0;
+}
+body[data-route^="Form"] .page-head .title-area .slds-page-title-kicker {
+	flex: 0 0 100%;
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	color: var(--slds-text-weak);
+	margin-bottom: 0.125rem;
+}
+body[data-route^="Form"] .page-head .navbar-breadcrumbs { margin: 0; }
+body[data-route^="Form"] .page-head .navbar-breadcrumbs li:last-child a {
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+}
+/* docstatus / "Not Saved" pill: shape + colours come from slds-components.css */
+body[data-route^="Form"] .page-head .indicator-pill { margin: 0; }
+/* unsaved: a small dot before "Not Saved" */
+body[data-route^="Form"] .page-head.slds-is-dirty .indicator-pill.orange::before {
+	content: "";
+	display: inline-block;
+	width: 0.375rem; height: 0.375rem;
+	margin-right: 0.375rem;
+	border-radius: 50%;
+	background: var(--slds-warning);
+}
+
+/* actions on the right: SLDS button group */
+body[data-route^="Form"] .page-head .page-actions { gap: 0.25rem; flex-wrap: wrap; }
+body[data-route^="Form"] .page-head .page-actions .btn {
+	height: 2rem;
+	margin-left: 0.25rem;
+	font-size: 0.8125rem;
+	padding: 0 0.75rem;
+}
+body[data-route^="Form"] .page-head .page-actions .btn.icon-btn { padding: 0 0.5rem; }
+body[data-route^="Form"] .page-head .page-actions .btn-primary.primary-action { font-weight: 600; }
+body[data-route^="Form"] .page-head .page-actions .inner-group-button .btn-default { padding-right: 0.5rem; }
+body[data-route^="Form"] .page-head .form-viewers .avatar { border: 2px solid #fff; }
+
+/* key-field row (inserted by JS) */
+.slds-highlights {
+	flex: 0 0 100%;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 0;
+	margin: 0.25rem 0 0;
+	padding: 0.5rem 0 0;
+	border-top: 1px solid var(--slds-border);
+}
+.slds-highlights:empty { display: none; }
+.slds-highlights__item {
+	flex: 1 1 10rem;
+	max-width: 18rem;
+	min-width: 0;
+	padding: 0 1rem 0 0;
+	margin-right: 1rem;
+	border-right: 1px solid var(--slds-border);
+}
+.slds-highlights__item:last-child { border-right: 0; margin-right: 0; }
+.slds-highlights__label {
+	display: block;
+	font-size: 0.75rem;
+	line-height: 1.25;
+	font-weight: 600;
+	color: var(--slds-text-weak);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.slds-highlights__value {
+	display: block;
+	font-size: 0.8125rem;
+	line-height: 1.25rem;
+	color: var(--slds-text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.slds-highlights__value a { color: var(--slds-link); }
+.slds-highlights__value .indicator { font-size: inherit; }
+
+/* ---------- 3. Path (status progression, inserted by JS) ----------- */
+.slds-path {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin: var(--slds-form-gap) 0 0;
+	padding: 0.5rem 1rem;
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	font-family: var(--slds-font);
+}
+.slds-path__track {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: stretch;
+	min-width: 0;
+	overflow: hidden;
+	border-radius: 15rem;
+}
+.slds-path__item {
+	flex: 1 1 0;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.375rem;
+	min-width: 0;
+	height: 1.875rem;
+	padding: 0 1.25rem 0 1.5rem;
+	margin-right: 0.1875rem;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--slds-text);
+	background: var(--slds-surface-3);
+	clip-path: polygon(0 0, calc(100% - 0.875rem) 0, 100% 50%, calc(100% - 0.875rem) 100%, 0 100%, 0.875rem 50%);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.slds-path__item:first-child {
+	padding-left: 1rem;
+	clip-path: polygon(0 0, calc(100% - 0.875rem) 0, 100% 50%, calc(100% - 0.875rem) 100%, 0 100%);
+}
+.slds-path__item:last-child {
+	margin-right: 0;
+	clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0.875rem 50%);
+}
+.slds-path__item:first-child:last-child { clip-path: none; }
+.slds-path__item svg { width: 0.75rem; height: 0.75rem; fill: currentColor; flex: 0 0 auto; }
+.slds-path__item.slds-is-complete { background: var(--slds-success-bg); color: var(--slds-success-text); }
+.slds-path__item.slds-is-current  { background: var(--slds-navy-2); color: #fff; }
+.slds-path__item.slds-is-lost     { background: var(--slds-error-bg); color: var(--slds-error); }
+.slds-path__item small { font-weight: 400; opacity: 0.85; }
+.slds-path__status {
+	flex: 0 0 auto;
+	font-size: 0.75rem;
+	color: var(--slds-text-weak);
+	white-space: nowrap;
+}
+.slds-path__status b { color: var(--slds-text); font-weight: 700; }
+
+/* ---------- 4. Tabs -------------------------------------------------- */
+body[data-route^="Form"] .page-head { transition: none !important; }
+body[data-route^="Form"] .form-tabs-list {
+	top: var(--slds-form-head-h) !important;
+	transition: none !important;   /* Frappe animates `top`; it lags (and freezes in hidden tabs) */
+	margin: 0;
+	padding: 0 0.75rem;
+	border-bottom: 1px solid var(--slds-border);
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	z-index: 5;
+}
+/* same trick for the gap between the sticky head and the sticky tab bar */
+body[data-route^="Form"] .form-tabs-list::before {
+	content: "";
+	position: absolute;
+	left: -1px; right: -1px;
+	top: calc(var(--slds-form-gap) * -1 - 1px);
+	height: var(--slds-form-gap);
+	background: var(--slds-page-bg);
+}
+body[data-route^="Form"] .form-tabs-list .form-tabs { gap: 0; }
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link {
+	position: relative;
+	margin: 0;
+	padding: 0.75rem 0.75rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--slds-text-weak);
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+}
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link::after {
+	content: "";
+	position: absolute;
+	left: 0; right: 0; bottom: 0;
+	height: 3px;
+	background: transparent;
+	border-radius: 0;
+}
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link:hover { color: var(--slds-brand-deep); text-decoration: none; }
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link:hover::after { background: var(--slds-brand-deep); }
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link.active {
+	color: var(--slds-brand-darker);
+	font-weight: 600;
+	padding-bottom: 0.75rem;
+	border: 0;
+}
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link.active::after { background: var(--slds-brand-dark); }
+body[data-route^="Form"] .form-tabs-list .form-tabs .nav-item .nav-link:focus-visible { box-shadow: none; outline: 2px solid var(--slds-brand-deep); outline-offset: -2px; }
+body[data-route^="Form"] .form-tab-content { margin-top: var(--slds-form-gap); }
+
+/* ---------- 5. Sections as cards ------------------------------------ */
+body[data-route^="Form"] .form-page .form-section.card-section,
+body[data-route^="Form"] .form-page .form-dashboard-section {
+	margin: 0 0 var(--slds-form-gap);
+	padding: 0;
+	background: var(--slds-surface);
+	border: var(--slds-card-border) !important;
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+}
+body[data-route^="Form"] .form-page .form-section.card-section.empty-section { display: none !important; }
+body[data-route^="Form"] .form-page .form-section .section-head {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1rem;
+	margin: 0 !important;
+	font-size: 1.25rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+	border-bottom: 1px solid var(--slds-border-soft);
+	border-radius: var(--slds-radius-card) var(--slds-radius-card) 0 0;
+}
+body[data-route^="Form"] .form-page .form-section .section-head.collapsible:hover { background: var(--slds-surface-hover); }
+body[data-route^="Form"] .form-page .form-section .section-head.collapsed { border-bottom: 0; border-radius: var(--slds-radius-card); }
+body[data-route^="Form"] .form-page .form-section .section-head .collapse-indicator { margin-left: auto; color: var(--slds-text-weak); }
+body[data-route^="Form"] .form-page .form-section .section-head .collapse-indicator svg { width: 0.875rem; height: 0.875rem; }
+body[data-route^="Form"] .form-page .form-section .section-body {
+	margin: 0 !important;
+	padding: 1rem 0.5rem 0.5rem;
+}
+body[data-route^="Form"] .form-page .form-section > .section-body:first-child { padding-top: 1rem; }
+body[data-route^="Form"] .form-page .form-section .section-body.hide { display: none; }
+body[data-route^="Form"] .form-page .form-section .form-section-description {
+	margin: 0;
+	padding: 0.5rem 1rem 0;
+	font-size: 0.8125rem;
+	color: var(--slds-text-weak);
+}
+body[data-route^="Form"] .form-page .form-column { padding: 0 0.5rem; }
+body[data-route^="Form"] .form-page .form-column .column-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--slds-text-weak);
+	margin-bottom: 0.5rem;
+}
+
+/* ---------- 6. Fields ----------------------------------------------- */
+body[data-route^="Form"] .form-layout .frappe-control {
+	margin-bottom: 0.75rem;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .form-layout .form-group { margin-bottom: 0; }
+body[data-route^="Form"] .form-layout .control-label {
+	display: inline-block;
+	margin-bottom: 0.125rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--slds-text-weak);
+}
+body[data-route^="Form"] .form-layout .control-label.reqd::after { content: " *"; color: var(--slds-error); }
+body[data-route^="Form"] .form-layout .control-label.reqd { color: var(--slds-text-weak); }
+body[data-route^="Form"] .form-layout .frappe-control .help { color: var(--slds-text-muted); }
+body[data-route^="Form"] .form-layout .frappe-control .help svg { width: 0.75rem; height: 0.75rem; }
+body[data-route^="Form"] .form-layout .form-control,
+body[data-route^="Form"] .form-layout .input-with-feedback {
+	height: 2rem;
+	padding: 0 0.75rem;
+	font-size: 0.8125rem;
+	line-height: 1.875rem;
+	color: var(--slds-text);
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius) !important;
+	box-shadow: none;
+	transition: border 0.1s linear, box-shadow 0.1s linear;
+}
+body[data-route^="Form"] .form-layout .form-control:hover { background: var(--slds-surface-hover) !important; }
+body[data-route^="Form"] .form-layout .form-control:focus {
+	border-color: var(--slds-border-strong) !important;
+	box-shadow: var(--slds-focus) !important;
+	outline: 0;
+}
+body[data-route^="Form"] .form-layout .form-control.bold { font-weight: 400; }
+body[data-route^="Form"] .form-layout .form-control:disabled,
+body[data-route^="Form"] .form-layout .form-control[readonly] {
+	background: var(--slds-page-bg) !important;
+	border-color: var(--slds-text-muted) !important;
+	color: var(--slds-text-weak);
+}
+body[data-route^="Form"] .form-layout textarea.form-control {
+	height: auto;
+	min-height: 4.5rem;
+	padding: 0.5rem 0.75rem;
+	line-height: 1.5;
+}
+body[data-route^="Form"] .form-layout .has-error .form-control { border-color: var(--slds-error) !important; }
+/* read-only value: SLDS "form-element_readonly" = plain text over a hairline */
+body[data-route^="Form"] .form-layout .like-disabled-input {
+	min-height: 1.75rem;
+	padding: 0.25rem 0 0.25rem;
+	font-size: 0.8125rem;
+	line-height: 1.25rem;
+	color: var(--slds-text);
+	background: transparent !important;
+	border: 0 !important;
+	border-bottom: 1px solid var(--slds-border-soft) !important;
+	border-radius: 0 !important;
+	word-break: break-word;
+}
+body[data-route^="Form"] .form-layout .like-disabled-input.bold { font-weight: 400; }
+body[data-route^="Form"] .form-layout .like-disabled-input a { color: var(--slds-link); }
+/* selects */
+body[data-route^="Form"] .form-layout select.form-control {
+	padding-right: 1.75rem;
+	appearance: none;
+	-webkit-appearance: none;
+}
+body[data-route^="Form"] .form-layout .select-icon { right: 0.625rem; color: var(--slds-text-weak); }
+body[data-route^="Form"] .form-layout .select-icon svg { width: 0.75rem; height: 0.75rem; }
+/* links */
+body[data-route^="Form"] .form-layout .link-field .link-btn,
+body[data-route^="Form"] .form-layout .link-btn {
+	background: var(--slds-surface);
+	border-radius: var(--slds-radius);
+}
+body[data-route^="Form"] .form-layout .awesomplete > ul {
+	border: var(--slds-popup-border);
+	border-radius: var(--slds-radius);
+	box-shadow: var(--slds-shadow-drop);
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .form-layout .awesomplete > ul > li { padding: 0.5rem 0.75rem; }
+body[data-route^="Form"] .form-layout .awesomplete > ul > li[aria-selected="true"],
+body[data-route^="Form"] .form-layout .awesomplete > ul > li:hover { background: var(--slds-brand-tint-2); color: var(--slds-text); }
+/* checkboxes */
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Check"] .checkbox { margin: 0.25rem 0 0; }
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Check"] .checkbox label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+	cursor: pointer;
+}
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Check"] input[type="checkbox"] {
+	width: 1rem; height: 1rem;
+	margin: 0;
+	accent-color: var(--slds-brand);
+	border: 1px solid var(--slds-border-strong);
+	border-radius: var(--slds-radius-sm);
+}
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Check"] .label-area { font-size: 0.8125rem; }
+/* date / time pickers keep Frappe's widget; input already themed */
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Date"] .form-control,
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Datetime"] .form-control { padding-right: 2rem; }
+/* rich text / code editors */
+body[data-route^="Form"] .form-layout .ql-toolbar,
+body[data-route^="Form"] .form-layout .ql-container {
+	border-color: var(--slds-border) !important;
+	background: var(--slds-surface);
+}
+body[data-route^="Form"] .form-layout .ql-toolbar { border-radius: var(--slds-radius) var(--slds-radius) 0 0; }
+body[data-route^="Form"] .form-layout .ql-container { border-radius: 0 0 var(--slds-radius) var(--slds-radius); }
+body[data-route^="Form"] .form-layout .ql-editor { font-size: 0.8125rem; font-family: var(--slds-font); min-height: 6rem; }
+body[data-route^="Form"] .form-layout .ace_editor { border: 1px solid var(--slds-border); border-radius: var(--slds-radius); }
+/* attach / button controls */
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Attach"] .btn,
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Attach Image"] .btn,
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Button"] .btn { height: 2rem; }
+body[data-route^="Form"] .form-layout .help-box { font-size: 0.75rem; color: var(--slds-text-muted); }
+/* misc field-like things */
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Small Text"] textarea { min-height: 3.5rem; }
+body[data-route^="Form"] .form-layout .frappe-control .control-input .btn { font-size: 0.8125rem; }
+body[data-route^="Form"] .form-message {
+	margin: 0 0 var(--slds-form-gap);
+	border-radius: var(--slds-radius);
+	font-size: 0.8125rem;
+}
+
+/* ---------- 7. Child tables (SLDS data table) ----------------------- */
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Table"] { padding-left: 0.5rem; padding-right: 0.5rem; }
+body[data-route^="Form"] .form-layout .frappe-control[data-fieldtype="Table"] .control-label {
+	font-size: 0.8125rem;
+	font-weight: 700;
+	color: var(--slds-text);
+}
+body[data-route^="Form"] .form-grid {
+	background: var(--slds-surface);
+	border: 1px solid var(--slds-border);
+	border-radius: var(--slds-radius);
+	color: var(--slds-text);
+	font-size: 0.8125rem;
+	--table-border-color: var(--slds-border);
+	--subtle-fg: var(--slds-page-bg);
+	--subtle-accent: var(--slds-surface);
+}
+body[data-route^="Form"] .form-grid .grid-heading-row {
+	height: 2.25rem;
+	border-bottom: 1px solid var(--slds-border);
+	color: var(--slds-text-weak);
+	background: var(--slds-page-bg);
+}
+body[data-route^="Form"] .form-grid .grid-heading-row .grid-row { background: var(--slds-page-bg); }
+body[data-route^="Form"] .form-grid .grid-heading-row .grid-static-col,
+body[data-route^="Form"] .form-grid .grid-heading-row .row-check,
+body[data-route^="Form"] .form-grid .grid-heading-row .row-index {
+	height: 2.25rem;
+	line-height: 1.5rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--slds-text-weak);
+	background: var(--slds-page-bg);
+	border-right: 1px solid var(--slds-border-soft);
+}
+body[data-route^="Form"] .form-grid .grid-heading-row.with-filter { height: auto; }
+body[data-route^="Form"] .form-grid .grid-heading-row.with-filter .filter-row .search { background: var(--slds-surface); }
+body[data-route^="Form"] .form-grid .grid-heading-row.with-filter .grid-static-col.search { height: 2.5rem; }
+body[data-route^="Form"] .form-grid .grid-row { border-bottom: 1px solid var(--slds-border); background: var(--slds-surface); }
+body[data-route^="Form"] .form-grid .grid-row:last-child { border-bottom: 0; }
+body[data-route^="Form"] .form-grid .grid-body .grid-row:hover:not(.grid-row-open) .data-row,
+body[data-route^="Form"] .form-grid .grid-body .grid-row:hover:not(.grid-row-open) .grid-static-col,
+body[data-route^="Form"] .form-grid .grid-body .grid-row:hover:not(.grid-row-open) .row-check,
+body[data-route^="Form"] .form-grid .grid-body .grid-row:hover:not(.grid-row-open) .row-index,
+body[data-route^="Form"] .form-grid .grid-body .grid-row:hover:not(.grid-row-open) .col:last-child { background: var(--slds-surface-hover); }
+body[data-route^="Form"] .form-grid .grid-body .data-row { color: var(--slds-text); }
+body[data-route^="Form"] .form-grid .grid-body .grid-static-col,
+body[data-route^="Form"] .form-grid .grid-body .row-index { height: 2.5rem; }
+body[data-route^="Form"] .form-grid .grid-row > .row .col { border-right: 1px solid var(--slds-border-soft); }
+body[data-route^="Form"] .form-grid .grid-row > .row .col:last-child { border-right: 0; }
+body[data-route^="Form"] .form-grid .grid-body .col:last-child { background: var(--slds-surface); }
+body[data-route^="Form"] .form-grid .grid-body .editable-row .form-control,
+body[data-route^="Form"] .form-grid .grid-body .editable-row .ql-editor {
+	height: auto;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: #fff !important;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	line-height: 1.5;
+}
+body[data-route^="Form"] .form-grid .grid-body .editable-row .form-control:focus {
+	box-shadow: var(--slds-focus-inset) !important;
+	border-color: transparent !important;
+}
+body[data-route^="Form"] .form-grid .grid-body .editable-row .link-btn { background: var(--slds-surface); }
+body[data-route^="Form"] .form-grid .grid-body .editable-row .form-control:disabled { background: var(--slds-page-bg) !important; }
+body[data-route^="Form"] .form-grid .grid-empty {
+	height: auto;
+	padding: 1rem;
+	font-size: 0.8125rem;
+	color: var(--slds-text-muted);
+	background: var(--slds-surface);
+}
+body[data-route^="Form"] .form-grid .grid-row-check { accent-color: var(--slds-brand); }
+body[data-route^="Form"] .form-grid .grid-footer,
+body[data-route^="Form"] .form-grid .grid-custom-buttons,
+body[data-route^="Form"] .form-grid .grid-footer-toolbar {
+	padding: 0.5rem 0.5rem;
+	background: var(--slds-surface);
+	border-top: 1px solid var(--slds-border-soft);
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .form-grid .grid-footer .btn,
+body[data-route^="Form"] .form-grid .grid-footer-toolbar .btn { height: 1.75rem; line-height: 1.625rem; font-size: 0.75rem; }
+body[data-route^="Form"] .form-grid .grid-pagination .btn { height: 1.5rem; }
+body[data-route^="Form"] .form-grid .grid-scroll-bar { background: var(--slds-surface); }
+/* row editing form (opened in-place over the grid) */
+body[data-route^="Form"] .form-grid .form-in-grid {
+	background: var(--slds-surface);
+	border: var(--slds-popup-border);
+	border-radius: var(--slds-radius);
+	box-shadow: var(--slds-shadow-drop);
+}
+/* Frappe pins the open row form at top:5%, which is under the fixed chrome */
+body[data-route^="Form"] .grid-row-open .form-in-grid {
+	top: calc(var(--slds-chrome-h) + 1rem);
+	max-height: calc(100vh - var(--slds-chrome-h) - 2rem);
+	padding: 0;
+}
+body[data-route^="Form"] .grid-row-open .form-in-grid .grid-form-body { max-height: calc(100vh - var(--slds-chrome-h) - 9rem); }
+body[data-route^="Form"] .form-grid .form-in-grid .grid-form-heading {
+	font-size: 1.125rem;
+	font-weight: 400;
+	color: var(--slds-text-heading);
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--slds-border-soft);
+}
+body[data-route^="Form"] .form-grid .form-in-grid .form-section {
+	margin: 0;
+	padding: 0.5rem 0.5rem;
+	border: 0 !important;
+	box-shadow: none;
+	background: transparent;
+}
+body[data-route^="Form"] .form-grid .form-in-grid .form-section:not(:first-child) { border-top: 1px solid var(--slds-border-soft) !important; }
+body[data-route^="Form"] .form-grid .form-in-grid .form-section .section-head {
+	padding: 0.5rem 0.5rem 0.25rem;
+	border-bottom: 0;
+	font-size: 1rem;
+}
+body[data-route^="Form"] .form-grid .form-in-grid .form-section .section-body { padding: 0.5rem 0 0; }
+body[data-route^="Form"] .form-grid .form-in-grid .control-label { font-weight: 400; }
+body[data-route^="Form"] .form-grid .form-in-grid .form-tabs-list {
+	position: relative !important;
+	top: 0 !important;
+	border: 0;
+	border-bottom: 1px solid var(--slds-border-soft);
+	border-radius: 0;
+	box-shadow: none;
+	margin: 0 0 0.5rem;
+}
+body[data-route^="Form"] .form-grid .form-in-grid .grid-footer-toolbar { border-top: 1px solid var(--slds-border-soft); }
+body[data-route^="Form"] .form-grid .form-in-grid .grid-footer-toolbar .btn { height: 2rem; line-height: 1.875rem; font-size: 0.8125rem; }
+
+/* ---------- 8. Form sidebar (right card) ---------------------------- */
+body[data-route^="Form"] .layout-side-section {
+	flex: 0 0 var(--slds-form-sidebar-w);
+	width: var(--slds-form-sidebar-w);
+	min-width: 0 !important;
+	margin: 0;
+	padding: 0;
+	border-left: 0 !important;
+	background: transparent;
+	position: sticky;
+	top: calc(var(--slds-form-head-h) + var(--slds-form-gap)) !important;
+	height: auto !important;
+	max-height: calc(100vh - var(--slds-chrome-h) - var(--slds-form-head-h) - var(--slds-form-gap) * 2);
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .layout-side-section.hide-sidebar { display: none; }
+body[data-route^="Form"] .layout-side-section .form-sidebar {
+	width: 100% !important;
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	font-family: var(--slds-font);
+}
+body[data-route^="Form"] .form-sidebar .sidebar-section {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--slds-border-soft) !important;
+}
+body[data-route^="Form"] .form-sidebar .sidebar-section:last-child,
+body[data-route^="Form"] .form-sidebar .sidebar-section.hidden + .sidebar-section:last-child { border-bottom: 0 !important; }
+body[data-route^="Form"] .form-sidebar .sidebar-section.hidden,
+body[data-route^="Form"] .form-sidebar .sidebar-section.hide { display: none; }
+body[data-route^="Form"] .form-sidebar hr { margin: 0.5rem -1rem; border-color: var(--slds-border-soft); }
+body[data-route^="Form"] .form-sidebar .sidebar-image-section { padding-bottom: 0.5rem; }
+body[data-route^="Form"] .form-sidebar .sidebar-image-section .sidebar-image,
+body[data-route^="Form"] .form-sidebar .sidebar-image-section .sidebar-standard-image { border-radius: var(--slds-radius); }
+body[data-route^="Form"] .form-sidebar .sidebar-image-section .standard-image {
+	border-radius: var(--slds-radius-lg);
+	background: var(--slds-brand-tint-2);
+	color: var(--slds-brand-dark);
+	font-weight: 600;
+}
+body[data-route^="Form"] .form-sidebar .sidebar-meta-details .form-title-text,
+body[data-route^="Form"] .form-sidebar .sidebar-meta-details .form-name-copy {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+	line-height: 1.25;
+}
+body[data-route^="Form"] .form-sidebar .sidebar-label,
+body[data-route^="Form"] .form-sidebar .form-sidebar-label,
+body[data-route^="Form"] .form-sidebar .add-assignment-label,
+body[data-route^="Form"] .form-sidebar .tags-label,
+body[data-route^="Form"] .form-sidebar .share-label,
+body[data-route^="Form"] .form-sidebar .attachments-label,
+body[data-route^="Form"] .form-sidebar .followed-by-label,
+body[data-route^="Form"] .form-sidebar .user-actions-header {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+}
+body[data-route^="Form"] .form-sidebar .form-sidebar-items { color: var(--slds-text-weak); }
+body[data-route^="Form"] .form-sidebar .form-sidebar-items .icon { stroke: var(--slds-text-weak); }
+body[data-route^="Form"] .form-sidebar .form-sidebar-items .icon-btn,
+body[data-route^="Form"] .form-sidebar .add-assignment-btn,
+body[data-route^="Form"] .form-sidebar .add-attachment-btn,
+body[data-route^="Form"] .form-sidebar .add-tags-btn,
+body[data-route^="Form"] .form-sidebar .share-doc-btn,
+body[data-route^="Form"] .form-sidebar .add-review-btn {
+	color: var(--slds-brand);
+	border-radius: var(--slds-radius);
+}
+body[data-route^="Form"] .form-sidebar .form-sidebar-items .icon-btn:hover { background: var(--slds-surface-hover); }
+body[data-route^="Form"] .form-sidebar .form-assignments,
+body[data-route^="Form"] .form-sidebar .form-attachments,
+body[data-route^="Form"] .form-sidebar .form-tags,
+body[data-route^="Form"] .form-sidebar .form-shared { padding: 0.625rem 1rem; }
+body[data-route^="Form"] .form-sidebar .modified-by,
+body[data-route^="Form"] .form-sidebar .created-by,
+body[data-route^="Form"] .form-sidebar .pageview-count {
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+	margin-bottom: 0.5rem;
+}
+body[data-route^="Form"] .form-sidebar .modified-by .frappe-timestamp,
+body[data-route^="Form"] .form-sidebar .created-by .frappe-timestamp {
+	font-size: 0.75rem;
+	color: var(--slds-text-weak);
+	margin-top: 0.125rem;
+}
+body[data-route^="Form"] .form-sidebar .modified-by a,
+body[data-route^="Form"] .form-sidebar .created-by a { color: var(--slds-link); }
+body[data-route^="Form"] .form-sidebar .attachment-row .data-pill,
+body[data-route^="Form"] .form-sidebar .form-tag-row .data-pill,
+body[data-route^="Form"] .form-sidebar .dialog-assignment-row {
+	font-size: 0.8125rem;
+	border-radius: var(--slds-radius);
+}
+body[data-route^="Form"] .form-sidebar .form-tag-row .data-pill {
+	background: var(--slds-surface-3);
+	border-radius: var(--slds-radius-pill);
+	font-size: 0.75rem;
+	font-weight: 400;
+	padding: 0 0.5rem !important;
+	height: 1.25rem;
+}
+body[data-route^="Form"] .form-sidebar .form-stats-likes .btn,
+body[data-route^="Form"] .form-sidebar .form-stats-likes .liked-by {
+	width: 2rem; height: 2rem;
+	border: 1px solid var(--slds-border-strong);
+	border-radius: 50%;
+	color: var(--slds-brand-dark);
+	background: var(--slds-surface);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+body[data-route^="Form"] .form-sidebar .form-stats-likes .btn:hover { background: var(--slds-surface-hover); }
+body[data-route^="Form"] .form-sidebar .show-all-btn {
+	margin: 0.25rem 0 0;
+	background: transparent;
+	color: var(--slds-link);
+	font-size: 0.75rem;
+}
+body[data-route^="Form"] .form-sidebar .tags-placeholder { font-size: 0.8125rem; color: var(--slds-text-muted); }
+body[data-route^="Form"] .form-sidebar .user-action-link { font-size: 0.8125rem; text-decoration: none; color: var(--slds-link); }
+
+/* ---------- 9. Footer: Chatter (publisher + timeline) --------------- */
+body[data-route^="Form"] .form-footer {
+	margin: 0;
+	padding: 0;
+	max-width: none;
+}
+body[data-route^="Form"] .form-footer .comment-box {
+	margin: 0 0 var(--slds-form-gap);
+	padding: 0;
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-header {
+	margin: 0;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--slds-border-soft);
+	align-items: center;
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-title {
+	font-size: 1.25rem;
+	font-weight: 400;
+	color: var(--slds-text-heading);
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-count { font-size: 0.8125rem; color: var(--slds-text-weak); }
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container {
+	padding: 1rem 1rem 0.5rem;
+	gap: 0.75rem;
+	align-items: flex-start;
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .avatar {
+	width: 2rem; height: 2rem;
+	margin: 0;
+	border-radius: 50%;
+	flex: 0 0 auto;
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control { padding: 0; margin: 0; }
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-editor,
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-container {
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong);
+	border-radius: var(--slds-radius);
+	min-height: 2.5rem;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.8125rem;
+	font-family: var(--slds-font);
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-container { padding: 0; border: 0; }
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-editor:focus,
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-container.ql-focused .ql-editor {
+	border-color: var(--slds-border-strong);
+	box-shadow: var(--slds-focus);
+	outline: 0;
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-editor.ql-blank::before {
+	color: var(--slds-text-muted);
+	font-style: normal;
+	left: 0.75rem;
+}
+body[data-route^="Form"] .form-footer .comment-box .comment-input-container .frappe-control .ql-toolbar {
+	border: 1px solid var(--slds-border);
+	border-top: 0;
+	border-radius: 0 0 var(--slds-radius) var(--slds-radius);
+	background: var(--slds-page-bg);
+}
+body[data-route^="Form"] .form-footer .comment-box .btn-comment {
+	margin: 0 1rem 0.75rem auto;
+	display: block;
+	height: 2rem;
+	line-height: 1.875rem;
+	padding: 0 1rem;
+	font-size: 0.8125rem;
+	background: var(--slds-brand) !important;
+	border-color: var(--slds-brand) !important;
+	color: #fff !important;
+}
+body[data-route^="Form"] .form-footer .comment-box .btn-comment.hidden { display: none; }
+/* timeline */
+body[data-route^="Form"] .form-footer .new-timeline {
+	padding: 0;
+	margin: 0 0 var(--slds-form-gap);
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+}
+body[data-route^="Form"] .form-footer .new-timeline::before { display: none; }
+body[data-route^="Form"] .form-footer .new-timeline .activity-title {
+	min-height: 0;
+	margin: 0 !important;
+	padding: 0.75rem 1rem;
+	background: transparent;
+	border-bottom: 1px solid var(--slds-border-soft);
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+body[data-route^="Form"] .form-footer .new-timeline .activity-title h4 {
+	font-size: 1.25rem;
+	font-weight: 400;
+	color: var(--slds-text-heading);
+	margin: 0;
+}
+body[data-route^="Form"] .form-footer .new-timeline .activity-title .timeline-actions {
+	min-height: 0;
+	background: transparent;
+	margin: 0 !important;
+	padding: 0;
+	gap: 0.5rem;
+}
+body[data-route^="Form"] .form-footer .new-timeline .activity-title .timeline-actions .timeline-content { padding: 0; }
+body[data-route^="Form"] .form-footer .new-timeline .activity-title .btn { height: 1.75rem; line-height: 1.625rem; font-size: 0.75rem; }
+body[data-route^="Form"] .form-footer .new-timeline > .timeline-items { padding: 0.25rem 1rem 0.5rem; }
+body[data-route^="Form"] .form-footer .new-timeline > .timeline-items > .timeline-item {
+	position: relative;
+	margin: 0;
+	padding: 0.75rem 0 0.75rem 2.75rem;
+	border-bottom: 1px solid var(--slds-border-soft);
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+	min-height: 3.25rem;
+}
+body[data-route^="Form"] .form-footer .new-timeline > .timeline-items > .timeline-item:last-child { border-bottom: 0; }
+/* avatar-like badge on the left of each item */
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-badge,
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-dot {
+	position: absolute;
+	left: 0;
+	top: 0.75rem;
+	width: 2rem; height: 2rem;
+	border-radius: 50%;
+	background: var(--slds-surface-3);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	--icon-stroke: var(--slds-text-weak);
+	--timeline-badge-color: var(--slds-text-weak);
+}
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-dot::before { background: var(--slds-text-weak); width: 0.375rem; height: 0.375rem; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-badge .icon { width: 1rem; height: 1rem; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-badge .avatar {
+	width: 2rem; height: 2rem;
+	border-radius: 50%;
+}
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-content {
+	margin: 0;
+	padding: 0;
+	max-width: none !important;
+	line-height: 1.5;
+	color: var(--slds-text);
+}
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-content a { color: var(--slds-link); }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-content .frappe-timestamp { color: var(--slds-text-muted); }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item b { font-weight: 700; color: var(--slds-text); }
+/* comment / email cards inside the timeline */
+body[data-route^="Form"] .form-footer .new-timeline .timeline-item .timeline-content.frappe-card {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+}
+body[data-route^="Form"] .form-footer .new-timeline .timeline-message-box .content {
+	padding: 0.5rem 0.75rem;
+	margin-top: 0.5rem;
+	background: var(--slds-page-bg);
+	border: 1px solid var(--slds-border-soft);
+	border-radius: var(--slds-radius);
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .form-footer .new-timeline .timeline-message-box .content::before { display: none; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-message-box .actions > *:not(.indicator-pill) { color: var(--slds-text-muted); font-size: 0.75rem; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-message-box .action-btn { font-size: 0.75rem; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-load-more { margin: 0.5rem 0 0; width: auto !important; }
+body[data-route^="Form"] .form-footer .new-timeline .timeline-load-more .btn { height: 1.75rem; line-height: 1.625rem; font-size: 0.75rem; }
+body[data-route^="Form"] .form-footer .scroll-to-top {
+	right: 0.5rem;
+	bottom: 0.5rem;
+	border-radius: 50% !important;
+	width: 2rem; height: 2rem;
+	padding: 0;
+}
+
+/* ---------- 10. Dashboard / connections tab ------------------------- */
+body[data-route^="Form"] .form-page .form-dashboard-section .section-body { padding: 0.75rem 1rem; }
+body[data-route^="Form"] .form-links .form-link-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+}
+body[data-route^="Form"] .form-links .document-link {
+	background: var(--slds-surface);
+	border: 1px solid var(--slds-border);
+	border-radius: var(--slds-radius-lg);
+	font-size: 0.8125rem;
+}
+body[data-route^="Form"] .form-links .document-link:hover { border-color: var(--slds-border-strong); background: var(--slds-brand-tint-2); }
+body[data-route^="Form"] .form-links .document-link .count {
+	background: var(--slds-surface-3);
+	border-radius: var(--slds-radius-sm);
+	font-weight: 400;
+	padding: 0 0.5rem;
+}
+body[data-route^="Form"] .form-links .document-link .btn-new { color: var(--slds-brand); }
+body[data-route^="Form"] .form-heatmap .heatmap { padding: 0.5rem 0; }
+
+/* ---------- 11. Small screens --------------------------------------- */
+@media (max-width: 991px) {
+	body[data-route^="Form"] .layout-main.layout-two-column { flex-direction: column; }
+	body[data-route^="Form"] .layout-side-section {
+		position: relative;
+		top: auto !important;
+		width: 100%;
+		flex: 0 0 auto;
+		max-height: none;
+	}
+	.slds-highlights__item { flex-basis: 8rem; }
+	.slds-path__item { padding: 0 0.75rem 0 1.25rem; font-size: 0.75rem; }
+	.slds-path__status { display: none; }
+}

@@ -1,0 +1,48 @@
+# Deploys the `release` branch to the production server over SSH.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   DEPLOY_HOST      public IP or DNS name of the server
+#   DEPLOY_USER      SSH user (e.g. ubuntu)
+#   DEPLOY_SSH_KEY   private key (PEM) whose public half is in that user's authorized_keys
+# Optional:
+#   DEPLOY_PATH      checkout path on the server (default /opt/utilnext)
+name: Deploy release
+
+on:
+  push:
+    branches: [release]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-release
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Prepare SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Pull and deploy on the server
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/opt/utilnext' }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "$USER@$HOST" bash -s <<EOF
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+            git fetch origin release
+            git checkout release
+            git reset --hard origin/release
+            bash deploy/scripts/deploy.sh
+          EOF

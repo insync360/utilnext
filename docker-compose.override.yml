@@ -1,0 +1,18 @@
+# Local overrides for pwd.yml
+# - Host port 8080 is occupied by another container on this machine, so ERPNext is
+#   published on 8090 instead. `!override` replaces the ports list rather than
+#   appending to it (a plain list would keep the conflicting 8080 mapping).
+# - ./slds-theme is bind-mounted into the nginx (frontend) container so the
+#   Salesforce-style theme files are served at /assets/slds/*. In the image,
+#   sites/assets is a symlink to /home/frappe/frappe-bench/assets (inside the
+#   image, not the shared `sites` volume), hence the mount target below.
+#   The files are referenced from sites/frontend/site_config.json via
+#   app_include_css / app_include_js.
+# Usage:
+#   docker compose -p erpnext -f pwd.yml -f docker-compose.override.yml up -d
+services:
+  frontend:
+    ports: !override
+      - "8090:8080"
+    volumes:
+      - ./slds-theme:/home/frappe/frappe-bench/assets/slds:ro

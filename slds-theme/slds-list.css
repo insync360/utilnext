@@ -1,0 +1,638 @@
+/* =====================================================================
+   slds-list.css - Salesforce Lightning look for Frappe list views
+   (/desk/<doctype>). Scope: object page header additions (kicker, meta
+   line, list-view controls), filter toolbar, list table, badges,
+   paging, group-by dropdowns, list sidebar fallback.
+   Tokens come from slds-theme.css (--slds-*). Everything is scoped to
+   `.page-container[data-page-route^="List/"]` so it never leaks into the
+   Home workspace or forms. See THEME-GUIDE.md.
+   ===================================================================== */
+
+/* ---------- 1. Scope-level variable overrides ---------------------- */
+.page-container[data-page-route^="List/"] {
+	--list-row-height: 2.25rem;
+	--highlight-color: var(--slds-surface-hover);   /* row hover */
+	--subtle-fg: var(--slds-page-bg);               /* header row bg */
+}
+
+/* ---------- 2. Object page header --------------------------------- */
+/* Title block: kicker ("Customers") / title / meta line. The kicker and
+   the meta line are inserted by slds-list.js; the breadcrumb <ul> and
+   the indicator pill stay on the middle row. */
+.page-container[data-page-route^="List/"] .page-head .page-title {
+	align-items: center;
+	gap: 0.75rem;
+	min-width: 0;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	row-gap: 0;
+	column-gap: 0.5rem;
+	min-width: 0;
+	line-height: 1.25;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .slds-page-title-kicker {
+	flex: 0 0 100%;
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	color: var(--slds-text-weak);
+	margin: 0;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .navbar-breadcrumbs {
+	margin: 0;
+	padding: 0;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .navbar-breadcrumbs li:last-child a {
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .page-indicator-pill {
+	margin-left: 0;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .page-indicator-pill:empty { display: none; }
+.page-container[data-page-route^="List/"] .page-head .title-area .slds-list-meta {
+	flex: 0 0 100%;
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	color: var(--slds-text-weak);
+	margin-top: 0.125rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.page-container[data-page-route^="List/"] .page-head .title-area .slds-list-meta:empty { display: none; }
+.page-container[data-page-route^="List/"] .page-head .title-area .slds-list-meta .slds-list-meta__sep {
+	margin: 0 0.375rem;
+	color: var(--slds-text-muted);
+}
+
+/* Header actions: neutral buttons + one brand button (colours come from
+   slds-theme.css). Make all of them the same 2rem height. */
+.page-container[data-page-route^="List/"] .page-head .page-actions .btn {
+	height: 2rem;
+	line-height: 1.875rem;
+	margin-left: 0.5rem;
+	font-size: 0.8125rem;
+	white-space: nowrap;
+}
+.page-container[data-page-route^="List/"] .page-head .page-actions .btn.icon-btn {
+	width: 2rem;
+	padding: 0;
+	justify-content: center;
+}
+.page-container[data-page-route^="List/"] .page-head .page-actions .btn.icon-btn .icon {
+	width: 0.875rem;
+	height: 0.875rem;
+}
+.page-container[data-page-route^="List/"] .page-head .page-actions .btn-primary.primary-action {
+	padding: 0 1rem;
+	font-weight: 600;
+}
+.page-container[data-page-route^="List/"] .page-head .page-actions .menu-btn-group .btn { color: var(--slds-brand-dark) !important; }
+
+/* ---------- 3. List card (toolbar + table share one white card) ---- */
+.page-container[data-page-route^="List/"] .layout-main { padding-top: 0.5rem; }
+.page-container[data-page-route^="List/"] .layout-main-section-wrapper { width: 100%; flex: 1 1 auto; min-width: 0; }
+.page-container[data-page-route^="List/"]:not([data-page-route*="/Kanban"]):not([data-page-route*="/Calendar"]):not([data-page-route*="/Gantt"]):not([data-page-route*="/Map"]):not([data-page-route*="/Image"]) .layout-main-section {
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	/* no overflow:hidden - awesomplete / filter dropdowns must escape */
+}
+
+/* ---------- 4. Filter toolbar (.page-form) ------------------------- */
+.page-container[data-page-route^="List/"] .page-form {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0.5rem 0.75rem;
+	background: var(--slds-surface);
+	border-bottom: 1px solid var(--slds-border-soft);
+	border-radius: var(--slds-radius-card) var(--slds-radius-card) 0 0;
+}
+.page-container[data-page-route^="List/"] .page-form.hide { display: none; }
+.page-container[data-page-route^="List/"] .page-form .standard-filter-section {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.page-container[data-page-route^="List/"] .page-form .form-group {
+	margin: 0;
+	padding: 0;
+	flex: 0 1 11rem;
+	min-width: 9rem;
+	max-width: 14rem;
+}
+.page-container[data-page-route^="List/"] .page-form .form-group.group-by-field { flex: 0 0 auto; min-width: 0; }
+.page-container[data-page-route^="List/"] .page-form .clearfix { display: none; }
+
+/* Inputs: border/background/radius/focus come from slds-theme.css; Frappe's
+   .input-xs filter inputs only need the 2rem sizing restored here */
+.page-container[data-page-route^="List/"] .page-form .form-control,
+.page-container[data-page-route^="List/"] .page-form .input-with-feedback {
+	height: 2rem !important;
+	min-height: 2rem;
+	padding: 0 0.75rem;
+	font-size: 0.8125rem;
+	line-height: 1.875rem;
+	color: var(--slds-text);
+	box-shadow: none !important;
+}
+.page-container[data-page-route^="List/"] .page-form .form-control:focus { box-shadow: var(--slds-focus) !important; outline: 0; }
+.page-container[data-page-route^="List/"] .page-form .input-group { display: flex; align-items: stretch; }
+.page-container[data-page-route^="List/"] .page-form .input-group > .form-control:not(:last-child) {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+.page-container[data-page-route^="List/"] .page-form .input-group-btn { display: flex; }
+.page-container[data-page-route^="List/"] .page-form .match-type-dropdown-btn {
+	height: 2rem;
+	padding: 0 0.5rem;
+	margin-left: -1px;
+	font-size: 0.75rem;
+	color: var(--slds-text-weak) !important;
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: 0 var(--slds-radius) var(--slds-radius) 0 !important;
+}
+.page-container[data-page-route^="List/"] .page-form .match-type-dropdown-btn:hover { background: var(--slds-surface-hover) !important; }
+.page-container[data-page-route^="List/"] .page-form .awesomplete > ul { font-size: 0.8125rem; }
+/* Checkbox standard filters ("Disabled" etc.) */
+.page-container[data-page-route^="List/"] .page-form .checkbox { margin: 0; }
+.page-container[data-page-route^="List/"] .page-form .checkbox label { font-size: 0.8125rem; color: var(--slds-text); }
+
+/* Neutral toolbar button (SLDS .slds-button_neutral) shared by the
+   filter / sort selectors, the group-by dropdowns and the list-view
+   controls moved in from the header. */
+.page-container[data-page-route^="List/"] .page-form .btn,
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.375rem;
+	height: 2rem;
+	padding: 0 0.75rem;
+	margin: 0;
+	font-size: 0.8125rem;
+	line-height: 1.875rem;
+	font-weight: 600;
+	white-space: nowrap;
+	color: var(--slds-brand-dark) !important;
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius-pill) !important;
+	box-shadow: none !important;
+	text-decoration: none;
+}
+.page-container[data-page-route^="List/"] .page-form .btn:hover,
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button:hover { background: var(--slds-brand-tint-2) !important; color: var(--slds-text-heading) !important; }
+.page-container[data-page-route^="List/"] .page-form .btn:focus-visible { box-shadow: var(--slds-focus) !important; }
+.page-container[data-page-route^="List/"] .page-form .btn .icon,
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button .icon {
+	width: 0.875rem;
+	height: 0.875rem;
+	--icon-stroke: currentColor;
+}
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button { width: auto !important; }
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button .ellipsis { color: var(--slds-text); }
+.page-container[data-page-route^="List/"] .page-form .list-sidebar-button.btn-primary-light {
+	background: var(--slds-brand-tint-2) !important;
+	border-color: var(--slds-border-strong) !important;
+}
+
+/* Joined button groups (filter + clear, order + sort-by, list view + saved filters) */
+.page-container[data-page-route^="List/"] .page-form .filter-section {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex: 0 0 auto;
+	margin: 0;
+	padding: 0;
+}
+.page-container[data-page-route^="List/"] .page-form .btn-group { display: inline-flex; margin: 0; }
+.page-container[data-page-route^="List/"] .page-form .btn-group > .btn:not(:first-child) {
+	margin-left: -1px;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+}
+.page-container[data-page-route^="List/"] .page-form .btn-group > .btn:hover { transform: none; box-shadow: none !important; }
+.page-container[data-page-route^="List/"] .page-form .btn-group > .btn:not(:last-child) {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+.page-container[data-page-route^="List/"] .page-form .btn-group > .btn:hover,
+.page-container[data-page-route^="List/"] .page-form .btn-group > .btn:focus { z-index: 1; }
+.page-container[data-page-route^="List/"] .page-form .filter-button .button-label { display: inline-flex; align-items: center; gap: 0.375rem; }
+.page-container[data-page-route^="List/"] .page-form .filter-button .filter-label {
+	display: inline-block;
+	min-width: 1.25rem;
+	height: 1.25rem;
+	margin: 0;
+	padding: 0 0.375rem;
+	border-radius: 15rem;
+	font-size: 0.75rem;
+	font-weight: 700;
+	line-height: 1.25rem;
+	text-align: center;
+	color: #fff;
+	background: var(--slds-brand);
+}
+.page-container[data-page-route^="List/"] .page-form .filter-button .filter-label:empty { display: none; }
+.page-container[data-page-route^="List/"] .page-form .filter-button.btn-primary-light,
+.page-container[data-page-route^="List/"] .page-form .filter-x-button.btn-primary-light {
+	background: var(--slds-brand-tint-2) !important;
+}
+.page-container[data-page-route^="List/"] .page-form .filter-x-button,
+.page-container[data-page-route^="List/"] .page-form .btn-order { padding: 0 0.5rem; }
+.page-container[data-page-route^="List/"] .page-form .sort-selector .sort-order .icon { width: 0.875rem; height: 0.875rem; }
+
+/* List-view controls (List View / Saved Filters) + filter/sort selectors,
+   grouped on the right by slds-list.js so they wrap as one unit */
+.page-container[data-page-route^="List/"] .page-form .slds-list-controls {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	flex: 0 0 auto;
+	margin-left: auto;
+	order: 5;
+}
+.page-container[data-page-route^="List/"] .page-form .custom-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex: 0 0 auto;
+	order: 5;
+}
+.page-container[data-page-route^="List/"] .page-form .custom-actions.hide { display: none; }
+.page-container[data-page-route^="List/"] .page-form .custom-actions .custom-btn-group,
+.page-container[data-page-route^="List/"] .page-form .custom-actions .inner-group-button { display: inline-flex; position: relative; }
+.page-container[data-page-route^="List/"] .page-form .custom-actions .btn { color: var(--slds-brand-dark) !important; }
+.page-container[data-page-route^="List/"] .page-form .custom-actions .btn .icon { color: currentColor; }
+.page-container[data-page-route^="List/"] .page-form .custom-actions .btn.btn-primary,
+.page-container[data-page-route^="List/"] .page-form .custom-actions .btn.btn-primary-light {
+	color: #fff !important;
+	background: var(--slds-brand) !important;
+	border-color: var(--slds-brand) !important;
+}
+.page-container[data-page-route^="List/"] .page-form .filter-section { order: 6; }
+/* the "restricted" (permission) pill stays at the end */
+.page-container[data-page-route^="List/"] .page-form .restricted-button { order: 7; margin: 0; height: 2rem; }
+
+/* Dropdowns opened from the toolbar (list view selector, group-by, sort) */
+.page-container[data-page-route^="List/"] .page-form .dropdown-menu {
+	font-size: 0.8125rem;
+	border: var(--slds-popup-border);
+	border-radius: var(--slds-radius);
+	box-shadow: var(--slds-shadow-drop);
+	padding: 0.25rem 0;
+}
+.page-container[data-page-route^="List/"] .page-form .dropdown-menu .dropdown-item,
+.page-container[data-page-route^="List/"] .page-form .dropdown-menu li > a {
+	padding: 0.5rem 0.75rem;
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+}
+.page-container[data-page-route^="List/"] .page-form .dropdown-menu .dropdown-item:hover,
+.page-container[data-page-route^="List/"] .page-form .dropdown-menu li > a:hover { background: var(--slds-brand-tint-2); }
+.page-container[data-page-route^="List/"] .page-form .group-by-dropdown {
+	max-height: 18rem;
+	overflow-y: auto;
+	min-width: 12rem;
+	left: 0 !important;
+}
+.page-container[data-page-route^="List/"] .page-form .group-by-dropdown .dropdown-item {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+.page-container[data-page-route^="List/"] .page-form .group-by-dropdown .group-by-count {
+	display: inline-block;
+	min-width: 1.5rem;
+	padding: 0 0.5rem;
+	border-radius: var(--slds-radius-sm);
+	background: var(--slds-surface-3);
+	font-size: 0.75rem;
+	font-weight: 400;
+	line-height: 1.375rem;
+	text-align: center;
+	color: var(--slds-text-weak);
+}
+.page-container[data-page-route^="List/"] .page-form .group-by-dropdown .dropdown-search { padding: 0.5rem; }
+.page-container[data-page-route^="List/"] .page-form .group-by-dropdown .dropdown-search .form-control { height: 1.75rem !important; }
+
+/* ---------- 5. List table (.frappe-list) ---------------------------- */
+.page-container[data-page-route^="List/"] .frappe-list {
+	margin: 0;
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+}
+.page-container[data-page-route^="List/"] .frappe-list .result-container { border-radius: 0; }
+.page-container[data-page-route^="List/"] .frappe-list .result { background: var(--slds-surface); }
+
+/* Row containers: no side padding / radius (Frappe pads them), rows
+   carry the padding so the borders run edge to edge. */
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container {
+	padding-inline: 0;
+	border-radius: 0;
+	background: transparent;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container:hover,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container:focus .list-row,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container:hover .level-right {
+	background: var(--slds-surface-hover);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container:focus { outline: 0; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row-container:focus-visible .list-row { box-shadow: var(--slds-focus-inset); }
+
+.page-container[data-page-route^="List/"] .frappe-list .list-row {
+	min-height: var(--list-row-height);
+	padding: 0 0 0 0.75rem;
+	font-size: 0.8125rem;
+	line-height: 1.25;
+	color: var(--slds-text);
+	border-bottom: 1px solid var(--slds-border);
+	border-radius: 0;
+	align-items: center;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row:hover:not(.list-row-head) .level-right { box-shadow: none; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row .level-left {
+	padding: 0.375rem 0;
+	align-items: center;
+	min-height: var(--list-row-height);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row .level-right {
+	padding: 0 0.75rem;
+	min-height: var(--list-row-height);
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	background: var(--slds-surface);
+	border-left: 0;
+	color: var(--slds-text-muted);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-col {
+	margin-right: 1rem;
+	align-items: center;
+}
+/* every cell shares one 1.25rem line box so text, links and badges align */
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col > .ellipsis,
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col > .level-item { line-height: 1.25rem; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col > span.ellipsis:not(.indicator-pill) { display: block; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row .indicator-pill { vertical-align: top; }
+
+/* Header row: #f3f3f3, bold 0.8125rem #444 labels */
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head {
+	height: var(--list-row-height);
+	min-height: var(--list-row-height);
+	padding-inline: 0 0 0 0.75rem;
+	border-radius: 0;
+	background: var(--slds-page-bg);
+	border-bottom: 1px solid var(--slds-border);
+	color: var(--slds-text-weak);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .level-left { padding: 0; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .level-right,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head:hover .level-right {
+	height: var(--list-row-height);
+	background: var(--slds-page-bg);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-row-col,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-row-col span,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-subject {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--slds-text-weak);
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-row-col > [data-sort-by]:hover {
+	color: var(--slds-text);
+	text-decoration: underline;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-count {
+	font-size: 0.75rem;
+	font-weight: 400;
+	color: var(--slds-text-weak);
+	white-space: nowrap;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .list-liked-by-me { margin-left: 0.5rem; }
+/* bulk-action checkbox helpers Frappe shows when rows are selected */
+.page-container[data-page-route^="List/"] .frappe-list .list-row-head .checkbox-actions { display: none; }
+
+/* Subject column: link blue, regular weight; other columns plain text */
+.page-container[data-page-route^="List/"] .frappe-list .list-subject { gap: 0; }
+.page-container[data-page-route^="List/"] .frappe-list .list-subject .level-item.bold { font-weight: 400; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-subject a {
+	color: var(--slds-link);
+	font-weight: 400;
+	text-decoration: none;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-subject a:hover {
+	color: var(--slds-link-hover);
+	text-decoration: underline;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col:not(.list-subject) a {
+	color: var(--slds-text);
+	text-decoration: none;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col:not(.list-subject) a:hover {
+	color: var(--slds-link);
+	text-decoration: underline;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row .list-row-col .text-muted { color: var(--slds-text-muted) !important; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row .tags-empty { color: var(--slds-text-muted); }
+
+/* Checkboxes (SLDS): 1rem, #c9c9c9 border, brand fill when checked */
+.page-container[data-page-route^="List/"] .frappe-list .select-like { padding: 0 0.75rem 0 0; display: inline-flex; align-items: center; }
+.page-container[data-page-route^="List/"] .frappe-list input.list-row-checkbox,
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 1rem !important;
+	height: 1rem !important;
+	margin: 0;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius-sm) !important;
+	background: var(--slds-surface) !important;
+	box-shadow: none !important;
+	cursor: pointer;
+	position: relative;
+	flex: 0 0 auto;
+	vertical-align: middle;
+}
+.page-container[data-page-route^="List/"] .frappe-list input.list-row-checkbox:hover,
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox:hover { border-color: var(--slds-brand) !important; }
+.page-container[data-page-route^="List/"] .frappe-list input.list-row-checkbox:focus-visible,
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox:focus-visible { outline: 0; box-shadow: var(--slds-focus) !important; }
+.page-container[data-page-route^="List/"] .frappe-list input.list-row-checkbox:checked,
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox:checked,
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox:indeterminate {
+	background-color: var(--slds-brand) !important;
+	border-color: var(--slds-brand) !important;
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") !important;
+	background-size: 0.875rem !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+}
+.page-container[data-page-route^="List/"] .frappe-list input.list-header-checkbox:indeterminate {
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' d='M4 8h8'/%3E%3C/svg%3E") !important;
+}
+
+/* Status indicators -> SLDS badges: shape + colours come from
+   slds-components.css (section 5); only list-specific bits here */
+.page-container[data-page-route^="List/"] .frappe-list .indicator-pill { max-width: 100%; }
+.page-container[data-page-route^="List/"] .frappe-list .indicator-pill.filterable:hover { text-decoration: underline; cursor: pointer; }
+
+/* Right-side meta: timestamp, comments, likes, assignments (muted) */
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity {
+	font-size: 0.75rem;
+	color: var(--slds-text-muted);
+	gap: 0;
+	align-items: center;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity .frappe-timestamp { font-size: 0.75rem; color: var(--slds-text-muted); }
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity .comment-count {
+	color: var(--slds-text-muted);
+	gap: 0.25rem;
+	font-size: 0.75rem;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity .comment-count .icon,
+.page-container[data-page-route^="List/"] .frappe-list .list-row-like .icon,
+.page-container[data-page-route^="List/"] .frappe-list .list-liked-by-me .icon {
+	width: 0.875rem;
+	height: 0.875rem;
+	--icon-stroke: var(--slds-text-muted);
+}
+.page-container[data-page-route^="List/"] .frappe-list .like-action.liked .icon,
+.page-container[data-page-route^="List/"] .frappe-list .like-action.liked { --icon-stroke: var(--slds-error-bright); color: var(--slds-error-bright); }
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity .avatar-group .avatar { width: 1.5rem; height: 1.5rem; }
+.page-container[data-page-route^="List/"] .frappe-list .list-row-activity .avatar-frame { font-size: 0.625rem; }
+
+/* Loading skeleton row */
+.page-container[data-page-route^="List/"] .frappe-list .freeze-row .list-row-col { background: var(--slds-border-soft); }
+
+/* Empty state */
+.page-container[data-page-route^="List/"] .frappe-list .no-result {
+	padding: 2.5rem 1rem;
+	color: var(--slds-text-muted);
+	font-size: 0.8125rem;
+}
+.page-container[data-page-route^="List/"] .frappe-list .no-result .msg-box p { font-size: 0.8125rem; color: var(--slds-text-weak); }
+.page-container[data-page-route^="List/"] .frappe-list .no-result .btn-primary {
+	background: var(--slds-brand) !important;
+	border-color: var(--slds-brand) !important;
+	color: #fff !important;
+}
+
+/* ---------- 6. Paging area ------------------------------------------ */
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area,
+.page-container[data-page-route^="List/"] .frappe-list .footnote-area {
+	padding: 0.5rem 0.75rem;
+	border-top: 1px solid var(--slds-border-soft);
+	background: var(--slds-surface);
+	border-radius: 0 0 var(--slds-radius-card) var(--slds-radius-card);
+	align-items: center;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn-group {
+	display: inline-flex;
+	border: 0;
+	border-radius: 0;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn {
+	height: 2rem;
+	padding: 0 0.75rem;
+	font-size: 0.8125rem;
+	line-height: 1.875rem;
+	font-weight: 600;
+	color: var(--slds-brand-dark) !important;
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius-pill) !important;
+	transform: none;
+	box-shadow: none !important;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn:hover { background: var(--slds-brand-tint-2) !important; color: var(--slds-text-heading) !important; box-shadow: none !important; }
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn-group .btn-paging:not(:first-child) {
+	margin-left: -1px;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn-group .btn-paging:not(:last-child) {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+/* selected page size = brand-tinted, bold (SLDS button-group "selected") */
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn-paging.btn-info {
+	background: var(--slds-brand-tint-2) !important;
+	color: var(--slds-text-heading) !important;
+	font-weight: 600;
+	position: relative;
+	z-index: 1;
+}
+.page-container[data-page-route^="List/"] .frappe-list .list-paging-area .btn-more { margin-left: 0.5rem; }
+
+/* ---------- 7. Bulk-action bar (checkbox selection) ----------------- */
+/* When rows are ticked Frappe swaps the primary button for "Actions";
+   it is already brand-coloured by slds-theme.css. Nothing else needed. */
+
+/* ---------- 8. List sidebar / group-by card (fallback) -------------- */
+/* Frappe v16 always sets body.no-list-sidebar and renders group-by in the
+   toolbar (section 4). If a sidebar is ever shown, make it an SLDS card. */
+.page-container[data-page-route^="List/"] .layout-side-section:not(:empty):has(.list-sidebar) {
+	flex: 0 0 15rem;
+	width: 15rem;
+	margin-right: 0.75rem;
+	padding: 0.75rem;
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	align-self: flex-start;
+}
+.page-container[data-page-route^="List/"] .list-sidebar { padding-top: 0; font-size: 0.8125rem; }
+.page-container[data-page-route^="List/"] .list-sidebar .sidebar-section .sidebar-label,
+.page-container[data-page-route^="List/"] .list-sidebar .sidebar-section .sidebar-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+}
+.page-container[data-page-route^="List/"] .list-sidebar .list-sidebar-button {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 2rem;
+	padding: 0 0.75rem;
+	font-size: 0.8125rem;
+	color: var(--slds-text) !important;
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius-pill) !important;
+}
+.page-container[data-page-route^="List/"] .list-sidebar .list-sidebar-button:hover { background: var(--slds-surface-hover) !important; }
+.page-container[data-page-route^="List/"] .list-sidebar .sidebar-action { color: var(--slds-link); font-size: 0.8125rem; }
+.page-container[data-page-route^="List/"] .list-sidebar .group-by-count {
+	display: inline-block;
+	min-width: 1.5rem;
+	padding: 0 0.5rem;
+	border-radius: var(--slds-radius-sm);
+	background: var(--slds-surface-3);
+	font-size: 0.75rem;
+	font-weight: 400;
+	line-height: 1.375rem;
+	text-align: center;
+}
+
+/* ---------- 9. Responsive ------------------------------------------ */
+@media (max-width: 991px) {
+	.page-container[data-page-route^="List/"] .page-form .form-group { flex: 1 1 10rem; max-width: none; }
+	.page-container[data-page-route^="List/"] .page-head .title-area .slds-list-meta { white-space: normal; }
+}

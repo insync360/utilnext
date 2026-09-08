@@ -1,0 +1,953 @@
+/* =====================================================================
+   ERPNext desk re-skin in the style of Salesforce Lightning (SLDS 2,
+   "Cosmos" theme). Token VALUES are copied from the Salesforce Lightning
+   Design System 2 global styling hooks (npm @salesforce-ux/design-system-2
+   2.264.1, theme "cosmos"); no Salesforce CSS is shipped, only our own
+   variables below. Loaded through sites/frontend/site_config.json ->
+   app_include_css. Scope: tokens, global chrome (header + nav bar), page
+   header, buttons, inputs, Home workspace, Desktop app grid.
+   ===================================================================== */
+
+/* ---------- 1. Tokens (SLDS 2 Cosmos, light) -------------------------
+   Cosmos raw palette used here (--slds-r-color-* / --slds-g-color-*):
+     brand-15 #001e5b  brand-20 #002775  brand-30 #022ac0  brand-40 #0250d9
+     brand-50 #066afe  brand-60 #4992fe  brand-90 #d6e6ff  brand-95 #edf4ff
+     neutral: 0 #000  20 #2e2e2e  40 #5c5c5c  50 #757575  80 #c9c9c9
+              90 #e5e5e5  95 #f3f3f3  100 #fff
+     on-surface-1 #5c5c5c  on-surface-2 #2e2e2e  on-surface-3 #03234d
+     surface-inverse-1 #032d60  surface-inverse-2 #03234d
+     success-40 #056764  success-50 #0b827c  success-90 #acf3e4
+     warning-40 #8c4b02  warning-50 #a96504  warning-60 #ca8501  warning-90 #f9e3b6
+     error-40 #b60554   error-50 #e3066a   error-90 #fddde3
+     info-40 #0b5cab    info-50 #0176d3    info-90 #d8e6fe
+   Radius scale radius-border-1..4 = 0.25 / 0.5 / 0.75 / 1.25rem, pill 15rem.
+   Shadows shadow-1..4 are the Cosmos layered soft shadows.
+   Variable NAMES are unchanged from the SLDS 1 pass so every other theme
+   file keeps working; only values (and a few new tokens) changed. */
+:root {
+	/* brand / accent */
+	--slds-brand: #066afe;             /* accent-1, brand-50: brand buttons, checks, dots */
+	--slds-brand-dark: #0250d9;        /* accent-2, brand-40: hover of brand, links, neutral-button text */
+	--slds-brand-darker: #022ac0;      /* accent-3, brand-30: link hover, active tab text */
+	--slds-brand-deep: #001e5b;        /* brand-15: focus ring, nav/tab hover bar */
+	--slds-brand-light: #4992fe;       /* brand-60 */
+	--slds-brand-tint: #edf4ff;        /* brand-95, accent-light-1: selected menu item, ranges */
+	--slds-brand-tint-2: #d6e6ff;      /* brand-90, accent-light-2: button / menu / row hover */
+	--slds-navy: #03234d;              /* surface-inverse-2: tooltips, chart tips, path current */
+	--slds-navy-2: #032d60;            /* surface-inverse-1 */
+	--slds-link: #0250d9;              /* link-color   (accent-2) */
+	--slds-link-hover: #022ac0;        /* link-color-hover (accent-3) */
+	/* surfaces */
+	--slds-page-bg: #f3f3f3;           /* surface-2 / surface-container-2 */
+	--slds-surface: #ffffff;           /* surface-1 / surface-container-1 */
+	--slds-surface-hover: #f3f3f3;     /* surface-container-2 */
+	--slds-surface-3: #e5e5e5;         /* surface-container-3: badges, disabled */
+	/* borders */
+	--slds-border: #c9c9c9;            /* border-1: cards-in-cards, table rows, dividers */
+	--slds-border-strong: #5c5c5c;     /* border-2: inputs, neutral buttons, checkboxes, pills */
+	--slds-border-soft: #e5e5e5;       /* neutral-90: hairlines inside cards */
+	--slds-card-border: 1px solid transparent;   /* container-color-border: transparent (flat cards) */
+	--slds-popup-border: 0;            /* menus / popovers have no border, only shadow-2 */
+	/* text */
+	--slds-text: #2e2e2e;              /* on-surface-2: body text */
+	--slds-text-heading: #03234d;      /* on-surface-3: headings, card titles, nav labels */
+	--slds-text-weak: #5c5c5c;         /* on-surface-1: labels, secondary text */
+	--slds-text-muted: #757575;        /* neutral-50: placeholders, timestamps */
+	/* radii */
+	--slds-radius-sm: 0.25rem;         /* radius-border-1: badges, checkboxes */
+	--slds-radius: 0.5rem;             /* radius-border-2: inputs, menus, modals, tables */
+	--slds-radius-lg: 0.75rem;         /* radius-border-3: nav items, tiles, card boundary */
+	--slds-radius-xl: 1.25rem;         /* radius-border-4: containers */
+	--slds-radius-card: var(--slds-radius-xl);
+	--slds-radius-pill: 15rem;
+	/* shadows (Cosmos layered) */
+	--slds-shadow-1: 0 0 2px rgba(0, 0, 0, 0.18), 0 2px 2px rgba(0, 0, 0, 0.18), 0 -1px 2px rgba(0, 0, 0, 0.1);
+	--slds-shadow-2: 0 0 5px rgba(0, 0, 0, 0.16), 0 3px 3px rgba(0, 0, 0, 0.16), 0 -1px 2px rgba(0, 0, 0, 0.09);
+	--slds-shadow-3: 0 0 7px rgba(0, 0, 0, 0.14), 0 5px 5px rgba(0, 0, 0, 0.14), 0 -1px 2px rgba(0, 0, 0, 0.08);
+	--slds-shadow-4: 0 0 10px rgba(0, 0, 0, 0.12), 0 7px 7px rgba(0, 0, 0, 0.12), 0 -1px 3px rgba(0, 0, 0, 0.07);
+	--slds-shadow-card: none;          /* container-shadow: none (cards are flat white on #f3f3f3) */
+	--slds-shadow-header: var(--slds-shadow-1);
+	--slds-shadow-drop: var(--slds-shadow-2);   /* menus, pickers, popovers */
+	/* focus: 2px white gap + 2px brand-15 ring (shadow-outset-focus-1) */
+	--slds-focus: 0 0 0 2px #ffffff, 0 0 0 4px var(--slds-brand-deep);
+	--slds-focus-inset: 0 0 0 2px var(--slds-brand-deep) inset;
+	/* button hover "lift" (Cosmos) */
+	--slds-button-lift: 0 1.5px 0 0 #2e2e2e;
+	--slds-button-lift-brand: 0 2px 0 0 #002775;
+	/* status (Cosmos semantic: success = teal, error = crimson) */
+	--slds-success: #0b827c;           /* success-50 */
+	--slds-success-text: #056764;      /* on-success-1 */
+	--slds-success-bg: #acf3e4;        /* success-container-1 */
+	--slds-warning: #ca8501;           /* warning-60 (dots), on-warning text below */
+	--slds-warning-text: #8c4b02;      /* on-warning-1 */
+	--slds-warning-bg: #f9e3b6;        /* warning-container-1 */
+	--slds-error: #b60554;             /* error-40 / on-error-1 (text, required marks) */
+	--slds-error-bright: #e3066a;      /* error-50 (dots, destructive) */
+	--slds-error-bg: #fddde3;          /* error-container-1 */
+	--slds-info: #0b5cab;              /* info-40 */
+	--slds-info-bg: #d8e6fe;           /* info-container-1 */
+	/* type */
+	--slds-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol";
+	--slds-font-size: 0.8125rem;       /* font-scale-base */
+	--slds-font-size-1: 0.875rem;      /* font-scale-1 */
+	--slds-font-size-neg-1: 0.75rem;   /* font-scale-neg-1 */
+	/* chrome */
+	--slds-header-h: 3.125rem;         /* 50px global header (header-sizing-height) */
+	--slds-navbar-h: 3rem;             /* 40px nav items + 0.25rem block padding each side */
+	--slds-chrome-h: calc(var(--slds-header-h) + var(--slds-navbar-h));
+}
+
+/* Dark mode is out of scope for this pass. When it is added, override the
+   tokens under [data-theme="dark"]; Cosmos dark values for the key ones:
+[data-theme="dark"] {
+	--slds-brand: #066afe;            (accent-1 is the same in both modes)
+	--slds-brand-dark: #7cb1fe;       (accent-2 dark = brand-70)
+	--slds-link: #7cb1fe;             (accent-2 dark)
+	--slds-page-bg: #181818;          (surface-2 dark)
+	--slds-surface: #242424;          (surface-1 / surface-container-1 dark)
+	--slds-border: #444444;           (border-1 dark)
+	--slds-border-strong: #757575;    (border-2 dark)
+	--slds-text: #e5e5e5;             (on-surface-2 dark)
+	--slds-text-heading: #d8e6fe;     (on-surface-3 dark)
+	--slds-text-weak: #aeaeae;        (on-surface-1 dark)
+}
+*/
+
+/* ---------- 2. Frappe variable overrides --------------------------- */
+:root,
+[data-theme="light"] {
+	--font-stack: var(--slds-font);
+	--bg-color: var(--slds-page-bg);
+	--fg-color: var(--slds-surface);
+	--card-bg: var(--slds-surface);
+	--navbar-bg: var(--slds-surface);
+	--surface-menu-bar: var(--slds-surface);
+	--border-color: var(--slds-border-soft);
+	--text-color: var(--slds-text);
+	--heading-color: var(--slds-text-heading);
+	--text-muted: var(--slds-text-weak);
+	--text-light: var(--slds-text-muted);
+	--primary: var(--slds-brand);
+	--primary-color: var(--slds-brand);
+	--control-bg: var(--slds-surface);
+	--subtle-fg: var(--slds-surface-hover);
+	--fg-hover-color: var(--slds-surface-hover);
+	--border-radius: var(--slds-radius);
+	--border-radius-sm: var(--slds-radius-sm);
+	--border-radius-md: var(--slds-radius);
+	--border-radius-lg: var(--slds-radius-lg);
+	--card-shadow: var(--slds-shadow-card);
+	--sidebar-hover-color: var(--slds-surface-hover);
+	--sidebar-border-color: var(--slds-border-soft);
+}
+
+body {
+	font-family: var(--slds-font);
+	color: var(--slds-text);
+	background: var(--slds-page-bg);
+}
+
+/* ---------- 3. Global chrome: header + context bar ---------------- */
+/* Hide Frappe's left sidebar; navigation moves to the Lightning nav bar. */
+.body-sidebar-container { display: none !important; }
+/* .main-section is Frappe's scroll container (100vh, overflow auto), so the
+   space for the fixed chrome has to be padding on it, not on <body>. */
+.main-section {
+	margin-left: 0 !important;
+	width: 100% !important;
+	box-sizing: border-box;
+}
+body.slds-ready .main-section { padding-top: var(--slds-chrome-h); }
+
+#slds-chrome {
+	position: fixed;
+	top: 0; left: 0; right: 0;
+	z-index: 1030;
+	font-family: var(--slds-font);
+	color: var(--slds-text);
+}
+
+/* Global header (SLDS .slds-global-header) */
+.slds-global-header {
+	display: flex;
+	align-items: center;
+	height: var(--slds-header-h);
+	padding: 0 1rem;
+	background: var(--slds-surface);
+	box-shadow: var(--slds-shadow-header);
+	position: relative;
+	z-index: 2;
+}
+.slds-global-header__logo {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	width: 12.5rem;
+	height: 2.5rem;
+	text-decoration: none;
+	color: var(--slds-text);
+}
+.slds-global-header__logo img { height: 1.75rem; width: auto; }
+.slds-global-header__logo span {
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: var(--slds-text-heading);
+}
+.slds-global-header__search {
+	flex: 1 1 auto;
+	display: flex;
+	justify-content: center;
+}
+.slds-global-search {
+	position: relative;
+	width: 100%;
+	max-width: 40rem;
+}
+.slds-global-search input {
+	width: 100%;
+	height: 2rem;
+	padding: 0 0.75rem 0 2.25rem;
+	border: 1px solid var(--slds-border-strong);
+	border-radius: var(--slds-radius);
+	background: var(--slds-surface);
+	font: inherit;
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+	cursor: text;
+}
+.slds-global-search input::placeholder { color: var(--slds-text-muted); }
+.slds-global-search input:hover { background: var(--slds-surface-hover); }
+.slds-global-search input:focus { outline: 0; box-shadow: var(--slds-focus); }
+.slds-global-search svg {
+	position: absolute;
+	left: 0.75rem; top: 50%;
+	width: 0.875rem; height: 0.875rem;
+	transform: translateY(-50%);
+	fill: var(--slds-text-weak);
+	pointer-events: none;
+}
+.slds-global-header__actions {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	width: 12.5rem;
+	justify-content: flex-end;
+}
+.slds-global-action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem; height: 2rem;
+	border: 0;
+	border-radius: var(--slds-radius);
+	background: transparent;
+	color: var(--slds-text-weak);
+	cursor: pointer;
+	text-decoration: none;
+	position: relative;
+}
+.slds-global-action:hover { background: var(--slds-surface-hover); color: #444444; }
+.slds-global-action:focus-visible { outline: 0; box-shadow: var(--slds-focus); }
+.slds-global-action svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
+.slds-global-action .slds-notification-badge {
+	position: absolute;
+	top: 0.125rem; right: 0.125rem;
+	min-width: 1rem; height: 1rem;
+	padding: 0 0.25rem;
+	border-radius: 0.5rem;
+	background: var(--slds-error-bright);
+	color: #fff;
+	font-size: 0.625rem;
+	font-weight: 700;
+	line-height: 1rem;
+	text-align: center;
+}
+.slds-avatar {
+	width: 2rem; height: 2rem;
+	border-radius: 50%;
+	background: var(--slds-brand);
+	color: #fff;
+	font-size: 0.8125rem;
+	font-weight: 700;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	border: 0;
+	cursor: pointer;
+	margin-left: 0.25rem;
+}
+.slds-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.slds-avatar:focus-visible { outline: 0; box-shadow: var(--slds-focus); }
+
+/* Context bar (SLDS 2 .slds-context-bar, Cosmos: no 3px brand bar, items
+   are 2.5rem pills with 0.25rem block padding; hover = 3px brand-15 bar
+   under the item, active = accent-2 text + 3px accent-2 bar) */
+.slds-context-bar {
+	display: flex;
+	align-items: stretch;
+	height: var(--slds-navbar-h);
+	padding: 0.25rem 0 0.25rem 1rem;
+	gap: 0.25rem;
+	box-sizing: border-box;
+	background: var(--slds-surface);
+	border-bottom: 0;
+	color: var(--slds-text-heading);
+	position: relative;
+	z-index: 1;
+}
+.slds-context-bar__primary {
+	display: flex;
+	align-items: center;
+	padding-right: 1.5rem;
+	position: relative;
+}
+.slds-context-bar__primary::after {
+	content: "";
+	position: absolute;
+	right: 0; top: 0.5rem; bottom: 0.5rem;
+	width: 1px;
+	background: var(--slds-border);
+}
+.slds-context-bar__icon-action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem; height: 2rem;
+	margin-right: 0.5rem;
+	border: 0;
+	border-radius: var(--slds-radius);
+	background: transparent;
+	color: var(--slds-text-weak);
+	cursor: pointer;
+}
+.slds-context-bar__icon-action:hover { background: var(--slds-surface-hover); color: var(--slds-text-heading); }
+.slds-context-bar__icon-action:focus-visible { outline: 0; box-shadow: var(--slds-focus); }
+.slds-context-bar__icon-action svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
+.slds-context-bar__app-name {
+	font-size: 1.25rem;                /* font-scale-3, app-font-weight 400 */
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+	white-space: nowrap;
+	border: 0;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+	font-family: inherit;
+}
+.slds-context-bar__secondary {
+	display: flex;
+	align-items: stretch;
+	flex: 1 1 auto;
+	gap: 0.25rem;
+	overflow: hidden;
+}
+.slds-context-bar__item {
+	display: flex;
+	align-items: stretch;
+	position: relative;
+	max-width: 15rem;
+	border-radius: var(--slds-radius-lg);
+	transition: background-color 0.25s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+.slds-context-bar__item::after {
+	content: "";
+	position: absolute;
+	left: 0; right: 0; bottom: 0;
+	height: 3px;
+	border-radius: 3px;
+	background: var(--slds-brand-deep);
+	opacity: 0;
+	transition: opacity 0.15s linear;
+}
+.slds-context-bar__item:hover::after { opacity: 1; }
+.slds-context-bar__item.slds-is-active { color: var(--slds-brand-dark); }
+.slds-context-bar__item.slds-is-active::after { opacity: 1; background: var(--slds-brand-dark); }
+.slds-context-bar__item:has(:focus-visible) { box-shadow: var(--slds-focus-inset); }
+.slds-context-bar__label-action {
+	display: flex;
+	align-items: center;
+	padding: 0 0.75rem;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	outline: 0;
+}
+.slds-context-bar__label-action:hover { text-decoration: none; color: inherit; }
+.slds-context-bar__item.slds-is-active .slds-context-bar__label-action { font-weight: 500; }
+.slds-context-bar__item[hidden] { display: none; }
+/* group tabs (sidebar sections) open a menu of their children */
+.slds-context-bar__item button.slds-context-bar__label-action {
+	gap: 0.25rem;
+	border: 0;
+	background: transparent;
+	font-family: inherit;
+	cursor: pointer;
+}
+.slds-context-bar__item button.slds-context-bar__label-action svg { width: 0.75rem; height: 0.75rem; fill: currentColor; flex: 0 0 auto; }
+.slds-tab-menu { position: fixed; top: auto; min-width: 12rem; max-width: 20rem; }
+.slds-more-menu .slds-dropdown__header:not(:first-child) { margin-top: 0.25rem; border-top: 1px solid var(--slds-border-soft); padding-top: 0.5rem; }
+/* "More" overflow (tabs that do not fit; filled by slds-theme.js) */
+.slds-context-bar__overflow {
+	display: flex;
+	align-items: stretch;
+	position: relative;
+	flex: 0 0 auto;
+	margin-right: 0.5rem;
+	border-radius: var(--slds-radius-lg);
+}
+.slds-context-bar__overflow[hidden] { display: none; }
+.slds-context-bar__overflow::after {
+	content: "";
+	position: absolute;
+	left: 0; right: 0; bottom: 0;
+	height: 3px;
+	border-radius: 3px;
+	background: var(--slds-brand-deep);
+	opacity: 0;
+}
+.slds-context-bar__overflow:hover::after { opacity: 1; }
+.slds-context-bar__overflow.slds-is-active { color: var(--slds-brand-dark); }
+.slds-context-bar__overflow.slds-is-active::after { opacity: 1; background: var(--slds-brand-dark); }
+.slds-context-bar__more {
+	gap: 0.25rem;
+	border: 0;
+	background: transparent;
+	font-family: inherit;
+	cursor: pointer;
+}
+.slds-context-bar__more svg { width: 0.75rem; height: 0.75rem; fill: currentColor; }
+.slds-more-menu { right: 0; top: 100%; }
+
+/* Dropdown (app launcher / user menu) */
+.slds-dropdown {
+	position: absolute;
+	top: calc(100% + 0.25rem);
+	min-width: 14rem;
+	max-height: 70vh;
+	overflow: auto;
+	padding: 0.25rem 0;
+	background: var(--slds-surface);
+	border: var(--slds-popup-border);
+	border-radius: var(--slds-radius);
+	box-shadow: var(--slds-shadow-drop);
+	z-index: 1040;
+}
+.slds-dropdown[hidden] { display: none; }
+.slds-dropdown__header {
+	padding: 0.5rem 0.75rem 0.25rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--slds-text-weak);
+}
+.slds-dropdown__item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.8125rem;
+	color: var(--slds-text);
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	border: 0;
+	width: 100%;
+	background: transparent;
+	text-align: left;
+	font-family: inherit;
+}
+.slds-dropdown__item > svg { width: 1rem; height: 1rem; fill: var(--slds-text-weak); flex: 0 0 auto; }
+.slds-dropdown__item:hover { background: var(--slds-brand-tint-2); color: var(--slds-text); text-decoration: none; }
+.slds-dropdown__item:focus-visible { outline: 0; box-shadow: var(--slds-focus-inset); border-radius: 6px; }
+.slds-dropdown__item.slds-is-selected { background: var(--slds-brand-tint); color: var(--slds-brand-dark); font-weight: 600; }
+.slds-dropdown__divider { height: 1px; margin: 0.25rem 0; background: var(--slds-border-soft); }
+.slds-app-launcher { left: 1rem; width: 22rem; }
+.slds-app-launcher .slds-dropdown__items { display: grid; grid-template-columns: 1fr 1fr; }
+.slds-user-menu { right: 1rem; }
+/* Frappe's notification panel, re-parented under the bell */
+.slds-global-header__actions { position: relative; }
+.slds-global-header__actions .dropdown-notifications.slds-notifications {
+	position: absolute;
+	top: calc(100% + 0.5rem);
+	right: 2.5rem;
+	width: 24rem;
+	max-height: 70vh;
+	overflow: auto;
+	background: var(--slds-surface);
+	border: var(--slds-popup-border);
+	border-radius: var(--slds-radius);
+	box-shadow: var(--slds-shadow-drop);
+	z-index: 1040;
+	display: block;
+}
+.slds-global-header__actions .dropdown-notifications.slds-notifications.hidden { display: none; }
+/* Inside the sidebar Frappe positions the list absolutely at 100vh; make it flow. */
+.slds-notifications .notifications-list {
+	position: static !important;
+	width: 100% !important;
+	height: auto !important;
+	max-height: 70vh;
+	left: auto !important;
+	top: auto !important;
+	margin: 0 !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	border-radius: var(--slds-radius);
+	background: var(--slds-surface);
+	display: flex;
+	flex-direction: column;
+}
+.slds-notifications .notification-list-header {
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--slds-border-soft);
+}
+.slds-notifications .notification-list-body { overflow: auto; max-height: 60vh; }
+.slds-user-menu__identity { padding: 0.75rem; display: flex; gap: 0.75rem; align-items: center; }
+.slds-user-menu__identity .slds-avatar { width: 2.5rem; height: 2.5rem; margin: 0; cursor: default; }
+.slds-user-menu__name { font-weight: 700; font-size: 0.875rem; }
+.slds-user-menu__email { font-size: 0.75rem; color: var(--slds-text-weak); }
+
+/* ---------- 4. Page header (Frappe .page-head) ---------------------
+   SLDS 2 page header (Cosmos): flat on the page background
+   (surface-container-2, no border / radius / shadow), title 1.5rem regular
+   in on-surface-3, kicker + meta line in on-surface-1. */
+.page-head {
+	/* sticky offset is measured from .main-section's content box, which already
+	   starts below the fixed chrome because of its padding-top */
+	position: sticky !important;
+	top: 0 !important;
+	height: auto !important;
+	min-height: 0;
+	margin: 0 0.75rem;
+	background: var(--slds-page-bg);
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	z-index: 1020;
+}
+/* bleed the flat header to the viewport edges so scrolled cards never
+   show beside it */
+.page-head::before {
+	content: "";
+	position: absolute;
+	left: -0.75rem; right: -0.75rem;
+	top: 0; bottom: 0;
+	background: var(--slds-page-bg);
+	z-index: -1;
+}
+.page-head .container { padding: 0.75rem 0.25rem 0.5rem; max-width: none; }
+/* Frappe's .row/.col grid: drop the -15px gutters so the head content sits
+   1rem from the card edge on every page type (list, form, workspace, page) */
+.page-head .page-head-content { min-height: 2rem; margin-left: 0; margin-right: 0; }
+.page-head .page-head-content > .page-title,
+.page-head .page-head-content > .page-actions { padding-left: 0; padding-right: 0; }
+.page-head .sidebar-toggle-btn { display: none !important; }
+.page-head .page-title { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.page-head .navbar-breadcrumbs { align-items: center; }
+.page-head .navbar-breadcrumbs li:not(:last-child) { display: none; }
+/* pages whose breadcrumbs only carry the home icon (tree views, custom
+   pages): slds-theme.js adds the title text and .slds-no-crumb */
+.page-head .title-area.slds-no-crumb .navbar-breadcrumbs { display: none !important; } /* beats .d-sm-flex */
+.page-head .slds-page-title-text {
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.page-head .navbar-breadcrumbs li::before,
+.page-head .navbar-breadcrumbs li::after,
+.page-head .navbar-breadcrumbs a::before,
+.page-head .navbar-breadcrumbs a::after { display: none !important; content: none !important; }
+.page-head .navbar-breadcrumbs li.disabled a,
+.page-head .navbar-breadcrumbs li:last-child a {
+	font-size: 1.5rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+	text-decoration: none;
+	padding: 0;
+}
+.page-head .navbar-breadcrumbs li:last-child::before { display: none; }
+/* object icon: Cosmos icons are circular (icon-radius-border: circle) */
+.slds-page-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem; height: 2.25rem;
+	border-radius: 50%;
+	background: #ff538a; /* standard:home */
+	flex: 0 0 auto;
+}
+.slds-page-icon svg { width: 1.25rem; height: 1.25rem; fill: #fff; }
+.slds-page-icon + .title-area::before,
+.slds-page-title-kicker {
+	display: block;
+	font-size: 0.8125rem;
+	color: var(--slds-text-weak);
+	line-height: 1.25;
+}
+
+/* ---------- 5. Buttons & controls ----------------------------------
+   SLDS 2 button (Cosmos): pill radius, weight 600, 1.875rem line box.
+   Neutral = white, 1px border-2 (#5c5c5c), accent-2 text; hover = brand-90
+   background, on-surface-3 text, 1.5px "lift" (translateY + hard shadow).
+   Brand = accent-1 background; hover = accent-2 + 2px lift. */
+.btn {
+	font-family: var(--slds-font);
+	border-radius: var(--slds-radius-pill) !important;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1.875rem;
+	padding: 0 1rem;
+	box-shadow: none !important;
+	transition: border-color 0.15s linear, background-color 0.15s linear, box-shadow 0.15s linear, transform 0.15s linear;
+}
+.btn.btn-sm, .btn.btn-xs { line-height: 1.75rem; padding: 0 0.75rem; }
+.btn.icon-btn, .btn.btn-default.icon-btn { padding: 0 0.5rem; }
+.btn-default, .btn-secondary,
+.btn.btn-default:active, .btn.btn-default:focus {
+	background: var(--slds-surface) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	color: var(--slds-brand-dark) !important;
+}
+.btn-default:hover, .btn-secondary:hover {
+	background: var(--slds-brand-tint-2) !important;
+	border: 1px solid var(--slds-border-strong) !important;
+	color: var(--slds-text-heading) !important;
+	box-shadow: var(--slds-button-lift) !important;
+	transform: translateY(-1.5px);
+}
+.btn-primary, .btn-primary:focus {
+	background: var(--slds-brand) !important;
+	border: 1px solid var(--slds-brand) !important;
+	color: #fff !important;
+}
+.btn-primary:hover, .btn-primary:active {
+	background: var(--slds-brand-dark) !important;
+	border-color: var(--slds-brand-dark) !important;
+	box-shadow: var(--slds-button-lift-brand) !important;
+	transform: translateY(-2px);
+}
+/* joined groups, inline input buttons and pressed state do not lift */
+.btn-group > .btn:hover, .input-group .btn:hover, .btn.active, .btn:active,
+.grid-footer .btn:hover, .form-grid .btn:hover, .modal-actions .btn:hover, .btn.btn-link:hover {
+	transform: none;
+	box-shadow: none !important;
+}
+.btn:focus-visible { box-shadow: var(--slds-focus) !important; outline: 0; }
+.btn-primary:focus-visible { box-shadow: var(--slds-focus) !important; }
+.btn:disabled, .btn.disabled {
+	background: var(--slds-surface-3) !important;
+	border-color: var(--slds-text-muted) !important;
+	color: var(--slds-text-muted) !important;
+	transform: none;
+	opacity: 1;
+}
+.page-head .btn svg, .page-head .btn .icon { color: currentColor; }
+
+/* Inputs (SLDS 2 .slds-input): 1px border-2, radius-2, on-surface-2 text;
+   focus keeps the border and adds the inset + outset focus ring */
+.form-control, .input-with-feedback, .like-disabled-input {
+	border: 1px solid var(--slds-border-strong) !important;
+	border-radius: var(--slds-radius) !important;
+	background: var(--slds-surface) !important;
+	font-family: var(--slds-font);
+	color: var(--slds-text);
+}
+.form-control:focus { border-color: var(--slds-border-strong) !important; box-shadow: var(--slds-focus) !important; outline: 0; }
+
+a { color: var(--slds-link); }
+a:hover { color: var(--slds-link-hover); }
+/* (.dropdown-menu, badges, inputs sizing, scrollbars: slds-components.css) */
+
+/* ---------- 6. Workspaces (Home is the reference) ------------------ */
+/* Frappe gives workspace .layout-main a fixed viewport height (for its own
+   sidebar scrolling); with the sidebar gone that only stops the page head
+   from staying sticky past the first screen. */
+.page-container[data-page-route="Workspaces"] .layout-main { height: auto !important; }
+.desk-page.page-main-content { padding: 0 0.25rem; }
+.layout-main-section-wrapper { margin-bottom: 0; }
+.page-body.container { max-width: none; padding: 0 0.75rem; }
+/* Lightning Home uses the full width; Frappe centres workspaces in 900px. */
+.page-container:has(.desk-page) .layout-main {
+	max-width: none !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+.page-container .layout-main-section,
+.desk-page.page-main-content,
+.codex-editor,
+.codex-editor__redactor {
+	width: 100% !important;
+	max-width: none !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+.layout-main { padding: 0.75rem 0 2rem; }
+/* Align workspace content with the page header's left edge */
+.page-container:has(.desk-page) .layout-main-section { padding-left: 0 !important; padding-right: 0 !important; }
+/* Cosmos: flat white cards sit directly on the surface-2 page background,
+   so the workspace / dashboard main section must not paint its own white */
+.page-container:has(.desk-page) .layout-main-section,
+.page-container:has(.dashboard-page) .layout-main-section { background: transparent !important; }
+.desk-page.page-main-content { padding: 0 !important; }
+.codex-editor__redactor { margin-left: 0 !important; margin-right: 0 !important; }
+/* Frappe's spacer block is a divider; Lightning just uses whitespace */
+.desk-page .widget.spacer { border: 0; box-shadow: none; background: transparent; }
+
+/* Section headers ("Your Shortcuts", "Reports & Masters") -> SLDS title caps */
+.codex-editor .ce-header,
+.codex-editor .ce-block .header .h4,
+.codex-editor .ce-block .header .h5,
+.codex-editor .ce-block .header .h6 {
+	font-size: 0.875rem !important;
+	font-weight: 600 !important;
+	color: var(--slds-text-heading) !important;
+	margin: 1.25rem 0 0.5rem !important;
+	padding: 0 0.25rem;
+}
+
+/* Every workspace widget becomes an SLDS card */
+.desk-page .widget {
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	background-clip: padding-box;
+	transition: box-shadow 0.15s ease;
+}
+.desk-page .widget:hover { box-shadow: var(--slds-shadow-2); }
+
+/* Shortcut tiles */
+.desk-page .widget.shortcut-widget-box { border-radius: var(--slds-radius-lg); }
+.desk-page .widget.shortcut-widget-box {
+	padding: 0.75rem 1rem;
+	min-height: 3.75rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.desk-page .widget.shortcut-widget-box .widget-head {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+.desk-page .widget.shortcut-widget-box .widget-label { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 1 1 auto; }
+.desk-page .widget.shortcut-widget-box .widget-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+}
+.desk-page .widget.shortcut-widget-box .widget-title:hover { color: var(--slds-link); }
+.desk-page .widget.shortcut-widget-box .widget-control { display: flex; align-items: center; gap: 0.5rem; }
+.desk-page .widget.shortcut-widget-box .widget-control .es-icon { display: none; }
+.desk-page .widget.shortcut-widget-box .indicator-pill {
+	background: var(--slds-surface-3) !important;
+	color: var(--slds-text-weak) !important;
+	font-size: 0.75rem;
+	font-weight: 400;
+	line-height: 1.375rem;
+	padding: 0 0.5rem;
+	border-radius: var(--slds-radius-sm);
+	min-width: 1.5rem;
+	text-align: center;
+}
+
+/* SLDS object icon (Cosmos: coloured circle with white glyph) */
+.slds-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem; height: 2rem;
+	border-radius: 50%;
+	background: var(--slds-icon-bg, #747474);
+	flex: 0 0 auto;
+}
+.slds-icon svg { width: 1.25rem; height: 1.25rem; fill: #fff; }
+.slds-icon_small { width: 1.5rem; height: 1.5rem; }
+.slds-icon_small svg { width: 0.875rem; height: 0.875rem; }
+
+/* Link cards */
+.desk-page .widget.links-widget-box { padding: 0; }
+.desk-page .widget.links-widget-box .widget-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--slds-border-soft);
+}
+.desk-page .widget.links-widget-box .widget-label { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.desk-page .widget.links-widget-box .widget-title {
+	font-size: 1.125rem;
+	font-weight: 400;
+	line-height: 1.25;
+	color: var(--slds-text-heading);
+}
+.desk-page .widget.links-widget-box .widget-subtitle { display: none; }
+.desk-page .widget.links-widget-box .widget-body { padding: 0.25rem 0; }
+.desk-page .widget.links-widget-box .link-item {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	font-size: 0.8125rem;
+	color: var(--slds-link);
+	text-decoration: none;
+	border-top: 1px solid var(--slds-border-soft);
+	margin: 0;
+}
+.desk-page .widget.links-widget-box .link-item:first-child { border-top: 0; }
+.desk-page .widget.links-widget-box .link-item:hover {
+	background: var(--slds-surface-hover);
+	color: var(--slds-link-hover);
+	text-decoration: underline;
+}
+.desk-page .widget.links-widget-box .link-item .link-content { color: inherit; }
+.desk-page .widget.links-widget-box .link-item .icon,
+.desk-page .widget.links-widget-box .link-item svg { display: none; }
+.desk-page .widget.links-widget-box .widget-footer:empty { display: none; }
+.desk-page .widget.links-widget-box .widget-footer {
+	padding: 0.5rem 1rem;
+	border-top: 1px solid var(--slds-border-soft);
+	font-size: 0.8125rem;
+	text-align: center;
+}
+
+/* Number / chart / onboarding cards pick up the same shell */
+.desk-page .widget.number-widget-box,
+.desk-page .widget.dashboard-widget-box,
+.desk-page .widget.onboarding-widget-box,
+.desk-page .widget.quick-list-widget-box,
+.desk-page .widget.custom-block-widget-box {
+	padding: 1rem;
+}
+.desk-page .widget.number-widget-box .widget-title,
+.desk-page .widget.dashboard-widget-box .widget-title,
+.desk-page .widget.quick-list-widget-box .widget-title {
+	font-size: 1.125rem;
+	font-weight: 400;
+	color: var(--slds-text-heading);
+}
+
+/* Editor toolbar / edit-mode remnants keep working, just recoloured */
+.ce-toolbar__plus, .ce-toolbar__settings-btn { color: var(--slds-brand); }
+
+/* ---------- 7. Small screens --------------------------------------- */
+@media (max-width: 1024px) {
+	.slds-global-header { padding: 0 0.75rem; }
+	.slds-global-header__logo { width: auto; margin-right: 1rem; }
+	.slds-global-header__actions { width: auto; margin-left: 0.75rem; }
+}
+@media (max-width: 767px) {
+	.slds-global-header__logo span { display: none; }
+	.slds-global-search { max-width: none; }
+	.slds-app-launcher { width: calc(100vw - 2rem); }
+	.page-head { margin: 0.5rem 0.5rem 0; }
+	.page-body.container { padding: 0 0.5rem; }
+}
+
+/* ---------- 7. Desktop (/desk app grid) -> Salesforce App Launcher --- */
+/* Frappe hides .page-head here and renders its own navbar; the global
+   chrome already provides search/bell/user, so drop the duplicate. */
+#page-desktop .desktop-navbar { display: none !important; }
+#page-desktop .layout-main { max-width: none !important; margin: 0 !important; padding: 0.75rem 0 2rem; }
+#page-desktop .layout-main-section { padding: 0 !important; }
+#page-desktop .desktop-wrapper { padding: 0 0.75rem; }
+#page-desktop .desktop-wrapper::before {
+	content: "App Launcher";
+	display: block;
+	margin: 0 0 0.75rem;
+	padding: 0.875rem 1rem;
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	font-size: 1.5rem;
+	font-weight: 400;
+	color: var(--slds-text-heading);
+}
+#page-desktop .desktop-container {
+	background: var(--slds-surface);
+	border: var(--slds-card-border);
+	border-radius: var(--slds-radius-card);
+	box-shadow: var(--slds-shadow-card);
+	padding: 1rem;
+	max-width: none;
+	margin: 0;
+}
+#page-desktop .desktop-container { display: block; }
+#page-desktop .desktop-container > .icons-container { display: block; width: auto !important; max-width: none; margin: 0; }
+/* grouped apps render a mini icons-container inside the tile: leave it alone */
+#page-desktop .desktop-icon .icon-container .icons-container {
+	width: auto !important;
+	height: auto !important;
+	transform: scale(0.6);
+	transform-origin: center center;
+}
+#page-desktop .desktop-container > .icons-container > .icons { justify-items: stretch; }
+#page-desktop a.desktop-icon { justify-self: stretch; }
+#page-desktop .desktop-container > .icons-container::before {
+	content: "All Apps";
+	display: block;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+	margin: 0 0 0.75rem;
+}
+#page-desktop .desktop-container > .icons-container > .icons {
+	width: auto !important;
+	display: grid !important;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: 0.75rem;
+	justify-content: start;
+}
+#page-desktop a.desktop-icon {
+	display: flex !important;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.75rem;
+	width: auto !important;
+	height: auto !important;
+	margin: 0 !important;
+	padding: 0.75rem 1rem;
+	background: var(--slds-surface);
+	border: 1px solid var(--slds-border);
+	border-radius: var(--slds-radius-lg);
+	text-decoration: none;
+	color: var(--slds-text);
+	transition: box-shadow 0.15s ease;
+	position: relative;
+}
+#page-desktop a.desktop-icon:hover { box-shadow: var(--slds-shadow-2); background: var(--slds-surface); }
+#page-desktop .desktop-icon .icon-container {
+	width: 2.5rem; height: 2.5rem;
+	margin: 0;
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+#page-desktop .desktop-icon .icon-container img.app-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; }
+#page-desktop .desktop-icon .icon-caption { margin: 0; text-align: left; min-width: 0; }
+#page-desktop .desktop-icon .icon-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--slds-text-heading);
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+	max-width: none;
+}
+#page-desktop .desktop-icon .hide-button { position: absolute; top: 0.375rem; right: 0.375rem; }
+#page-desktop .edit-mode-buttons { margin-top: 0.75rem; }
