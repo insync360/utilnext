@@ -22,8 +22,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0(mermaid@11.17.2)(vitepress@2.0.0-alpha.19(esbuild@0.27.7)(postcss@8.5.26))(vue@3.5.41)
       vitepress-sidebar:
-        specifier: 1.39.0
-        version: 1.39.0
+        specifier: 1.40.0
+        version: 1.40.0
 
 packages:
 
@@ -898,8 +898,8 @@ packages:
     resolution: {integrity: sha512-5BMULNob1vgFX6EjQw5izWDxrecWK9AM72rugNr0TFldMOi0fj6Jk+zeKIt0xGj4cEfQIJth4w3OKWOJ4f+AFw==}
     engines: {node: '>=0.10.0'}
 
-  js-yaml@3.15.1:
-    resolution: {integrity: sha512-S99WuO3HlhO3XN41EtYUNl9zzXjoJx7QvmipxsJVxtCBT0YHEFy+iOJhjSvrmV12nYhWpZaM8lPHkJm0yUMbag==}
+  js-yaml@3.15.2:
+    resolution: {integrity: sha512-6EuL879VkRA+1Cz578mKMiKvjPNEuk6+r1JaFzoSWejZmtf7xWbIyw1e3KkxlkzTIt9Taw6JBhEppG7utc1P+w==}
     hasBin: true
 
   katex@0.16.47:
@@ -1087,8 +1087,8 @@ packages:
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
-  qsu@1.17.0:
-    resolution: {integrity: sha512-B5aiSYizO7EZwUdvwFzk3qi72VxeUszst9ARLVn2Xc2oS7fI7+DuOahoPgmE1WKA0HOwTvkGgyrB9nCXH5rhGg==}
+  qsu@1.18.0:
+    resolution: {integrity: sha512-YMfqHAbfQzyJueKDW0E+khjn4HrRxfTLSYZ7/U1kaywn3YQDyUUNvCFnZ/SyfPypvRVA6jpx3Dm5wIi8T0rN7g==}
     engines: {node: '>=18.0.0'}
 
   regex-recursion@6.0.2:
@@ -1242,8 +1242,8 @@ packages:
       vitepress: '>=1.0.0'
       vue: ^3.0.0
 
-  vitepress-sidebar@1.39.0:
-    resolution: {integrity: sha512-GgHYtvF0ctYODmHv1CpJOMCfvUOvq0RSG+ZfUwvykmBBFpM1sos1YMt6L292UuOGr9UhROspCv8YLNC4H0glZg==}
+  vitepress-sidebar@1.40.0:
+    resolution: {integrity: sha512-HwcZHixwwnLSbcDAbh+TRISX0zNerzL4UUpVlIEjbQleae095lfOQEFtB0Jkbxajy2yUiluH+TgLTLVMOj7+Tw==}
     engines: {node: '>=20.0.0'}
 
   vitepress@2.0.0-alpha.19:
@@ -2034,7 +2034,7 @@ snapshots:
 
   gray-matter@4.0.3:
     dependencies:
-      js-yaml: 3.15.1
+      js-yaml: 3.15.2
       kind-of: 6.0.3
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
@@ -2075,7 +2075,7 @@ snapshots:
 
   is-extendable@0.1.1: {}
 
-  js-yaml@3.15.1:
+  js-yaml@3.15.2:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
@@ -2255,7 +2255,7 @@ snapshots:
 
   property-information@7.2.0: {}
 
-  qsu@1.17.0: {}
+  qsu@1.18.0: {}
 
   regex-recursion@6.0.2:
     dependencies:
@@ -2399,11 +2399,11 @@ snapshots:
       vitepress: 2.0.0-alpha.19(esbuild@0.27.7)(postcss@8.5.26)
       vue: 3.5.41
 
-  vitepress-sidebar@1.39.0:
+  vitepress-sidebar@1.40.0:
     dependencies:
       glob: 13.0.6
       gray-matter: 4.0.3
-      qsu: 1.17.0
+      qsu: 1.18.0
 
   vitepress@2.0.0-alpha.19(esbuild@0.27.7)(postcss@8.5.26):
     dependencies:
